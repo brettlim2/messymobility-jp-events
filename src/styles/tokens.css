@@ -1,0 +1,85 @@
+@import 'tailwindcss';
+
+/* MessyNet · Signal in the Dark — ported verbatim from the VectorMobility MVP
+   (src/index.css). Flat dark surfaces separated by borders, not blur/glow. */
+@theme {
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+  --mn-night: #0b0e18;
+  --mn-abyss: #07090b;
+  --mn-panel: #10161c;
+  --mn-card: #152420;
+  --mn-callout-bg: #122823;
+  --mn-teal: #00c4b0;
+  --mn-teal-hover: #00d8c2;
+  --mn-deep: #0e4d46;
+  --mn-volt: #bbff2b; /* the signal dot — ONE per surface */
+  --mn-border: #2b453f;
+  --mn-wire: #1c3833;
+  --mn-wire-subtle: #1a222b;
+  --mn-heading: #f2f7f6;
+  --mn-ice: #dee9e7;
+  --mn-body: #c3d4d1;
+  --mn-mist: #8fa8a3;
+  --mn-faint: #5f7a76;
+  --mn-logo-ink: #03050a;
+  --mn-radius-sm: 5px;
+  --mn-radius-btn: 6px;
+  --mn-radius: 8px;
+  --mn-radius-lg: 10px;
+  --mn-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--mn-night);
+  color: var(--mn-heading);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.vm-page-bg {
+  background-color: var(--mn-night);
+}
+
+/* Card surface — flat, bordered, quiet */
+.vm-glass {
+  background: var(--mn-panel);
+  border: 1px solid var(--mn-wire);
+}
+
+/* Featured surface — one teal edge, no gradient */
+.vm-glass-bright {
+  background: var(--mn-card);
+  border: 1px solid var(--mn-border);
+  border-top: 2px solid var(--mn-teal);
+}
+
+/* Teal custom scrollbars (quiet) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mn-wire) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--mn-wire);
+  border-radius: 6px;
+}

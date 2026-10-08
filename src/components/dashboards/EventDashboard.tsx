@@ -1,0 +1,184 @@
+import { useState } from 'react'
+import type { EventVenue, Reference, SocialVenue } from '../../lib/types'
+import { GlassPanel, SectionHeader, KpiTile, BarRow, DonutStat, FutureSlot, Empty, Kicker } from '../ui'
+import { fmtInt, fmtLift, fmtFloat } from '../../lib/format'
+import { TEAL_LT } from '../../lib/palette'
+import { seriesFrom, HallFootprintMap, EventPhaseChart, NormalizationPanel, TouristSplit, SocialStrip } from '../EventExtras'
+import { TgsSocialExplorer } from '../TgsSocialExplorer'
+import { tgsCopy, tgsGroup, tgsNumber, tgsText, tgsZone, type Locale } from '../../lib/tgsI18n'
+
+export interface EventConfig {
+  venueKey: string
+  title: string
+  eventLabel: string
+  during: string[]
+  framing: string
+  crossVisitNote: string
+  highlightZones?: string[]
+}
+
+export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
+  { cfg: EventConfig; v: EventVenue | undefined; reference: Reference | null; social?: SocialVenue | null; locale?: Locale }) {
+  const [footprint, setFootprint] = useState<'event' | 'campus'>('event')
+  const isTgs = cfg.venueKey === 'makuhari_messe'
+  const t = (key: keyof typeof tgsCopy.en, values?: Record<string, string | number>) => tgsText(locale, key, values)
+  if (!v) return <Empty note={`${isTgs ? t('title') : cfg.title}: ${t('noEvent')}`} />
+
+  const eventSeries = seriesFrom(v, 'event')
+  const campusSeries = seriesFrom(v, 'campus')
+  const touristSeries = seriesFrom(v, 'tourist')
+  const chartSeries = footprint === 'campus' && campusSeries.length ? campusSeries : eventSeries
+  const norm = v.normalization ?? null
+  const hasCampus = campusSeries.length > 0
+  const headlineLift = norm?.relative_pct != null
+    ? `${norm.relative_pct > 0 ? '+' : ''}${norm.relative_pct}%`
+    : fmtLift(v.during_vs_before_lift)
+  const headlineSub = norm ? (norm.detected ? t('normalizedDetected') : t('normalizedNoise')) : t('dailyVisitorLift')
+  const showSocial = isTgs && !!social?.feed_posts
+  const sep20 = social?.daily?.['2026-09-20']
+  const sep19 = social?.daily?.['2026-09-19']
+  const sep21 = social?.daily?.['2026-09-21']
+  const highlightedZones = cfg.highlightZones?.map((zone) => tgsZone(zone, locale)) ?? []
+  const percent = (part: number, whole: number) => whole ? tgsNumber(Math.round(part / whole * 1000) / 10, locale) : '—'
+
+  return (
+    <div className="flex flex-col gap-4">
+      <GlassPanel bright className="p-5">
+        <Kicker>{isTgs ? t('eventLabel') : cfg.eventLabel}</Kicker>
+        <h2 className="font-display text-[22px] text-[var(--mn-heading)] mt-1">{isTgs ? t('title') : cfg.title}</h2>
+        <p className="text-[12px] text-[var(--mn-mist)] mt-1.5 max-w-3xl leading-relaxed">{isTgs ? t('framing') : cfg.framing}</p>
+        {showSocial && <a href="#tgs-social" className="mt-2 inline-block text-[11px] font-semibold text-[var(--mn-teal)] underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">{t('jump', { count: tgsNumber(social.posts, locale) })}</a>}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-4">
+          {showSocial ? <>
+            <KpiTile label={t('socialPosts')} value={tgsNumber(social.posts, locale)} />
+            <KpiTile label={t('capcomPosts')} value={tgsNumber(social.capcom_posts ?? 0, locale)} accent />
+            <KpiTile label={t('capcomMakuhari')} value={tgsNumber(social.capcom_venue_mentions ?? 0, locale)} />
+            <KpiTile label={v.footprint ? t('eventHallVisitors') : t('campusDevices')} value={tgsNumber(v.visitors, locale)} />
+          </> : <>
+            <KpiTile label={isTgs && !v.footprint ? t('campusDevices') : t('eventHallVisitors')} value={fmtInt(v.visitors)}
+              sub={v.footprint_area_km2 ? `${v.footprint_area_km2} km² ${t('footprint')}` : undefined} />
+            <KpiTile label={isTgs && !v.window ? t('legacyLift') : t('duringBaseline')} value={headlineLift} accent
+              sub={isTgs && !v.window ? t('legacyLiftSub') : headlineSub} />
+            <KpiTile label={t('medianDwell')} value={`${fmtFloat(v.median_dwell_min)}m`} />
+            {v.tourist_share_during != null ? (
+              <KpiTile label={t('inboundShare')} value={`${Math.round(v.tourist_share_during * 100)}%`} sub={t('ofDuring')} />
+            ) : (
+              <KpiTile label={t('newVenue')} value={v.first_time_share == null ? '—' : `${Math.round(v.first_time_share * 100)}%`} sub={t('ofDuringWindow')} />
+            )}
+          </>}
+        </div>
+        {v.holiday_overlap_note && (
+          <p className="mt-3 text-[11px] leading-relaxed text-[var(--mn-mist)] border-l-2 border-[var(--mn-teal)] pl-2.5">
+            {v.holiday_overlap_note}
+          </p>
+        )}
+        {isTgs && !v.window && (
+          <p className="mt-3 text-[11px] leading-relaxed text-[var(--mn-mist)] border-l-2 border-[var(--mn-volt)] pl-2.5">
+            {t('legacyWarning')}
+          </p>
+        )}
+      </GlassPanel>
+
+      {showSocial && <GlassPanel className="p-5">
+        <SectionHeader kicker={t('keyFindings')} title={t('keyFindings')} />
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('locationSignal')}</h3>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('locationFinding', { count: tgsNumber(social.capcom_venue_mentions ?? 0, locale), total: tgsNumber(social.capcom_posts ?? 0, locale), share: percent(social.capcom_venue_mentions ?? 0, social.capcom_posts ?? 0) })}</p>
+          </div>
+          {sep20?.footfall != null && sep19?.footfall != null && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('peakSignal')}</h3>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('peakFinding', { posts: tgsNumber(sep20.posts, locale), current: tgsNumber(sep20.footfall, locale), previous: tgsNumber(sep19.footfall, locale) })}</p>
+          </div>}
+          {sep21 && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('cancelSignal')}</h3>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('cancelFinding', { posts: tgsNumber(sep21.posts, locale), share: percent(sep21.posts, social.posts) })}</p>
+          </div>}
+        </div>
+      </GlassPanel>}
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        <GlassPanel className="p-5 lg:col-span-2">
+          <div className="flex items-start justify-between gap-3">
+            <SectionHeader kicker={t('footfallKicker')} title={isTgs ? t('footfallTitle') : 'Did the activation move offline visitation?'} />
+            {hasCampus && (
+              <div className="flex shrink-0 rounded-[var(--mn-radius)] border border-[var(--mn-wire)] overflow-hidden text-[10px]">
+                {(['event', 'campus'] as const).map((f) => (
+                  <button key={f} onClick={() => setFootprint(f)} className="px-2.5 py-1 uppercase tracking-[0.1em]"
+                    style={{ background: footprint === f ? 'var(--mn-callout-bg)' : 'transparent',
+                             color: footprint === f ? 'var(--mn-heading)' : 'var(--mn-mist)' }}>
+                    {f === 'event' ? t('eventHalls') : t('wholeCampus')}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <EventPhaseChart series={chartSeries} during={cfg.during} dayTags={v.day_tags} locale={locale}
+            caption={isTgs && !v.window
+              ? t('legacyChart')
+              : `${t('phaseAverage')} — ${t('before')} ${fmtFloat(v.phase_avg_daily.before)} · ${t('during')} ${fmtFloat(v.phase_avg_daily.during)} · ${t('after')} ${fmtFloat(v.phase_avg_daily.after)}`
+                + (hasCampus ? `  ·  ${t('campusLift')} ${fmtLift(v.during_vs_before_lift_campus)} / ${t('eventLift')} ${fmtLift(v.during_vs_before_lift)}` : '')} />
+        </GlassPanel>
+        <GlassPanel className="p-5">
+          <SectionHeader kicker={t('audienceKicker')} title={t('newReturning')} />
+          <DonutStat value={v.first_time_share}
+            label={`${tgsNumber(v.first_time_at_venue, locale)} ${t('newVenue')}`}
+            sub={`${tgsNumber(v.returning, locale)} ${t('returning')} · ${tgsNumber(v.during_visitors, locale)} ${t('duringWindow')}`} />
+        </GlassPanel>
+      </div>
+
+      {social ? (
+        <GlassPanel className="p-5" id={social.feed_posts ? 'tgs-social' : undefined}>
+          <SectionHeader kicker={t('socialKicker')} title={social.feed_posts ? t('socialTitle') : t('socialFallbackTitle')}
+            sub={social.feed_posts ? t('socialSub') : t('socialFallbackSub')} />
+          {social.feed_posts ? <TgsSocialExplorer social={social} locale={locale} /> : <SocialStrip social={social} />}
+        </GlassPanel>
+      ) : (
+        <FutureSlot label={isTgs ? t('missingSocial') : 'Social buzz for this IP/event overlays on the footfall curve once scraped.'} />
+      )}
+
+      {(v.halls?.length || norm) && (
+        <div className="grid lg:grid-cols-2 gap-4">
+          {v.halls?.length ? (
+            <GlassPanel className="p-5">
+              <SectionHeader kicker={t('hallKicker')} title={t('hallTitle')} sub={t('hallSub')} />
+              <HallFootprintMap halls={v.halls} />
+            </GlassPanel>
+          ) : null}
+          {norm ? (
+            <GlassPanel className="p-5">
+              <SectionHeader kicker={t('normKicker')} title={t('normTitle')} sub={t('normSub')} />
+              <NormalizationPanel norm={norm} />
+            </GlassPanel>
+          ) : null}
+        </div>
+      )}
+
+      {touristSeries.length > 0 && (
+        <GlassPanel className="p-5">
+          <SectionHeader kicker={t('touristKicker')} title={t('touristTitle')} sub={t('touristSub')} />
+          <TouristSplit event={eventSeries} tourist={touristSeries} shareDuring={v.tourist_share_during} />
+        </GlassPanel>
+      )}
+
+      <div className="grid lg:grid-cols-2 gap-4">
+        <GlassPanel className="p-5">
+          <SectionHeader kicker={t('originKicker')} title={t('originTitle')} sub={t('originCoverage', { count: tgsNumber(v.home_origin_coverage, locale) })} />
+          {v.home_origin_top_zones.length ? (
+            <BarRow items={v.home_origin_top_zones.map((z) => ({ label: tgsZone(z.zone, locale), value: z.visitors }))} highlight={(l) => highlightedZones.includes(l)} />
+          ) : <Empty note={t('noOrigins')} />}
+        </GlassPanel>
+        <GlassPanel className="p-5">
+          <SectionHeader kicker={t('crossKicker')} title={t('crossTitle')} sub={isTgs ? t('crossSub') : cfg.crossVisitNote} />
+          <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{t('byArea')}</div>
+          <BarRow items={v.cross_visit_zones.slice(0, 8).map((z) => ({ label: tgsZone(z.zone, locale), value: z.devices }))} highlight={(l) => highlightedZones.includes(l)} color={TEAL_LT} />
+          <div className="mt-4 mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{t('byVenueType')}</div>
+          <BarRow items={v.cross_visit_poi_groups.slice(0, 7).map((g) => ({ label: tgsGroup(g.group, locale), value: g.visits }))} color={TEAL_LT} />
+        </GlassPanel>
+      </div>
+      {reference?.caveats?.length ? (
+        <p className="text-[11px] text-[var(--mn-faint)]">{isTgs ? t('panelCaveat') : reference.caveats[0]}</p>
+      ) : null}
+    </div>
+  )
+}

@@ -1,0 +1,154 @@
+{
+  "window": {
+    "first": "2026-09-16",
+    "last": "2026-09-23",
+    "days": 8
+  },
+  "panel": {
+    "note": "Factori SDK panel; device-ids inflated by MAID churn. Patterns over absolute counts."
+  },
+  "caveats": [
+    "Panel estimates (Factori SDK), not census; patterns over absolute counts.",
+    "Nationality is partial \u2014 roaming / foreign-carrier devices only.",
+    "Venue footprints are approximate (hand-built polygons)."
+  ],
+  "weighting": {
+    "national_weighted_pop": 121724408.0,
+    "top_prefectures": [
+      {
+        "pref_jis": "13",
+        "name": "Tokyo",
+        "weighted_pop": 14064696,
+        "devices": 473458
+      },
+      {
+        "pref_jis": "14",
+        "name": "Kanagawa",
+        "weighted_pop": 9240411,
+        "devices": 278370
+      },
+      {
+        "pref_jis": "27",
+        "name": "Osaka",
+        "weighted_pop": 8842523,
+        "devices": 268913
+      },
+      {
+        "pref_jis": "23",
+        "name": "Aichi",
+        "weighted_pop": 7546192,
+        "devices": 206167
+      },
+      {
+        "pref_jis": "11",
+        "name": "Saitama",
+        "weighted_pop": 7346836,
+        "devices": 198983
+      },
+      {
+        "pref_jis": "12",
+        "name": "Chiba",
+        "weighted_pop": 6287034,
+        "devices": 161725
+      },
+      {
+        "pref_jis": "28",
+        "name": "Hyogo",
+        "weighted_pop": 5469184,
+        "devices": 142571
+      },
+      {
+        "pref_jis": "40",
+        "name": "Fukuoka",
+        "weighted_pop": 5138891,
+        "devices": 123292
+      }
+    ]
+  },
+  "age_profile": [
+    {
+      "pref_jis": "01",
+      "name": "Hokkaido",
+      "youth_pct": 10.75981,
+      "working_pct": 57.02635,
+      "elderly_pct": 32.21383
+    },
+    {
+      "pref_jis": "02",
+      "name": "Aomori",
+      "youth_pct": 10.5984,
+      "working_pct": 55.50442,
+      "elderly_pct": 33.89719
+    },
+    {
+      "pref_jis": "03",
+      "name": "Iwate",
+      "youth_pct": 11.07767,
+      "working_pct": 55.10237,
+      "elderly_pct": 33.81997
+    },
+    {
+      "pref_jis": "04",
+      "name": "Miyagi",
+      "youth_pct": 11.9076,
+      "working_pct": 59.74674,
+      "elderly_pct": 28.34566
+    },
+    {
+      "pref_jis": "05",
+      "name": "Akita",
+      "youth_pct": 9.74553,
+      "working_pct": 52.65246,
+      "elderly_pct": 37.60201
+    },
+    {
+      "pref_jis": "06",
+      "name": "Yamagata",
+      "youth_pct": 11.34536,
+      "working_pct": 54.68507,
+      "elderly_pct": 33.96957
+    },
+    {
+      "pref_jis": "07",
+      "name": "Fukushima",
+      "youth_pct": 11.45787,
+      "working_pct": 56.70469,
+      "elderly_pct": 31.83744
+    },
+    {
+      "pref_jis": "08",
+      "name": "Ibaraki",
+      "youth_pct": 11.86925,
+      "working_pct": 58.2601,
+      "elderly_pct": 29.87066
+    },
+    {
+      "pref_jis": "09",
+      "name": "Tochigi",
+      "youth_pct": 11.99197,
+      "working_pct": 58.79233,
+      "elderly_pct": 29.2157
+    },
+    {
+      "pref_jis": "10",
+      "name": "Gunma",
+      "youth_pct": 11.8225,
+      "working_pct": 57.77957,
+      "elderly_pct": 30.39793
+    },
+    {
+      "pref_jis": "11",
+      "name": "Saitama",
+      "youth_pct": 12.04147,
+      "working_pct": 60.81431,
+      "elderly_pct": 27.14423
+    },
+    {
+      "pref_jis": "12",
+      "name": "Chiba",
+      "youth_pct": 11.94268,
+      "working_pct": 60.41599,
+      "elderly_pct": 27.64133
+    }
+  ]
+}

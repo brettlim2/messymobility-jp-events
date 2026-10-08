@@ -1,0 +1,594 @@
+{
+  "makuhari_messe": {
+    "venue": "Makuhari Messe",
+    "event": "Tokyo Game Show 2026 (CAPCOM)",
+    "visitors": 9064,
+    "visits": 18930,
+    "median_dwell_min": 42.7,
+    "daily_visitors": [
+      {
+        "date": "2026-09-16",
+        "visitors": 1699
+      },
+      {
+        "date": "2026-09-17",
+        "visitors": 1795
+      },
+      {
+        "date": "2026-09-18",
+        "visitors": 1838
+      },
+      {
+        "date": "2026-09-19",
+        "visitors": 1858
+      },
+      {
+        "date": "2026-09-20",
+        "visitors": 1658
+      },
+      {
+        "date": "2026-09-21",
+        "visitors": 1429
+      },
+      {
+        "date": "2026-09-22",
+        "visitors": 1830
+      },
+      {
+        "date": "2026-09-23",
+        "visitors": 225
+      }
+    ],
+    "phase_avg_daily": {
+      "before": 1699.0,
+      "during": 1715.6,
+      "after": 1027.5
+    },
+    "during_vs_before_lift": 1.01,
+    "during_visitors": 6915,
+    "first_time_at_venue": 6275,
+    "returning": 640,
+    "first_time_share": 0.907,
+    "home_origin_coverage": 3888,
+    "home_origin_top_zones": [
+      {
+        "zone": "Makuhari / Chiba",
+        "visitors": 1916
+      },
+      {
+        "zone": "Asakusa",
+        "visitors": 348
+      },
+      {
+        "zone": "Tokyo Disney Resort / Maihama",
+        "visitors": 285
+      },
+      {
+        "zone": "Ikebukuro",
+        "visitors": 161
+      },
+      {
+        "zone": "Omiya / Saitama",
+        "visitors": 155
+      },
+      {
+        "zone": "Tachikawa",
+        "visitors": 128
+      },
+      {
+        "zone": "Narita Airport",
+        "visitors": 108
+      },
+      {
+        "zone": "Shibuya",
+        "visitors": 91
+      },
+      {
+        "zone": "Kawasaki",
+        "visitors": 79
+      },
+      {
+        "zone": "Yokohama Minato Mirai",
+        "visitors": 61
+      },
+      {
+        "zone": "Shinjuku",
+        "visitors": 60
+      },
+      {
+        "zone": "Shinagawa",
+        "visitors": 59
+      }
+    ],
+    "cross_visit_zones": [
+      {
+        "zone": "Makuhari / Chiba",
+        "devices": 5238
+      },
+      {
+        "zone": "Asakusa",
+        "devices": 1343
+      },
+      {
+        "zone": "Tokyo Disney Resort / Maihama",
+        "devices": 1065
+      },
+      {
+        "zone": "Ikebukuro",
+        "devices": 751
+      },
+      {
+        "zone": "Marunouchi / Tokyo Station",
+        "devices": 690
+      },
+      {
+        "zone": "Shinjuku",
+        "devices": 676
+      },
+      {
+        "zone": "Akihabara",
+        "devices": 650
+      },
+      {
+        "zone": "Narita Airport",
+        "devices": 638
+      },
+      {
+        "zone": "Omiya / Saitama",
+        "devices": 627
+      },
+      {
+        "zone": "Ginza",
+        "devices": 583
+      },
+      {
+        "zone": "Shinagawa",
+        "devices": 530
+      },
+      {
+        "zone": "Shibuya",
+        "devices": 527
+      },
+      {
+        "zone": "Tachikawa",
+        "devices": 495
+      },
+      {
+        "zone": "Yokohama Minato Mirai",
+        "devices": 418
+      },
+      {
+        "zone": "Kawasaki",
+        "devices": 374
+      }
+    ],
+    "cross_visit_poi_groups": [
+      {
+        "group": "Services & Business",
+        "visits": 29993
+      },
+      {
+        "group": "Food & Drink",
+        "visits": 25168
+      },
+      {
+        "group": "Shopping",
+        "visits": 20319
+      },
+      {
+        "group": "Sports & Recreation",
+        "visits": 7369
+      },
+      {
+        "group": "Health Care",
+        "visits": 7271
+      },
+      {
+        "group": "Transport & Travel",
+        "visits": 7182
+      },
+      {
+        "group": "Lifestyle Services",
+        "visits": 6451
+      },
+      {
+        "group": "Education",
+        "visits": 5870
+      },
+      {
+        "group": "Cultural & Historic",
+        "visits": 4177
+      },
+      {
+        "group": "Community & Government",
+        "visits": 3667
+      },
+      {
+        "group": "Arts & Entertainment",
+        "visits": 3244
+      },
+      {
+        "group": "Lodging",
+        "visits": 2851
+      }
+    ],
+    "cross_visit_poi_categories": [
+      {
+        "category": "rental_kiosk",
+        "visits": 8952
+      },
+      {
+        "category": "japanese_restaurant",
+        "visits": 6943
+      },
+      {
+        "category": "convenience_store",
+        "visits": 3814
+      },
+      {
+        "category": "park",
+        "visits": 3678
+      },
+      {
+        "category": "atm",
+        "visits": 2982
+      },
+      {
+        "category": "parking",
+        "visits": 2960
+      },
+      {
+        "category": "historic_site",
+        "visits": 2463
+      },
+      {
+        "category": "cafe",
+        "visits": 2302
+      },
+      {
+        "category": "pharmacy",
+        "visits": 2012
+      },
+      {
+        "category": "hair_salon",
+        "visits": 2004
+      },
+      {
+        "category": "restaurant",
+        "visits": 1921
+      },
+      {
+        "category": "post_office",
+        "visits": 1800
+      },
+      {
+        "category": "grocery_store",
+        "visits": 1699
+      },
+      {
+        "category": "hotel",
+        "visits": 1623
+      },
+      {
+        "category": "party_and_event_planning",
+        "visits": 1598
+      },
+      {
+        "category": "package_locker",
+        "visits": 1592
+      },
+      {
+        "category": "travel_and_transportation",
+        "visits": 1546
+      },
+      {
+        "category": "shopping",
+        "visits": 1540
+      },
+      {
+        "category": "bar",
+        "visits": 1434
+      },
+      {
+        "category": "hospital",
+        "visits": 1411
+      }
+    ]
+  },
+  "odaiba": {
+    "venue": "Odaiba (Fuji TV waterfront)",
+    "event": "Odaiba Drone Show 2026 (Fuji TV waterfront)",
+    "visitors": 10590,
+    "visits": 22881,
+    "median_dwell_min": 47.4,
+    "daily_visitors": [
+      {
+        "date": "2026-09-16",
+        "visitors": 1947
+      },
+      {
+        "date": "2026-09-17",
+        "visitors": 1786
+      },
+      {
+        "date": "2026-09-18",
+        "visitors": 1906
+      },
+      {
+        "date": "2026-09-19",
+        "visitors": 2274
+      },
+      {
+        "date": "2026-09-20",
+        "visitors": 2630
+      },
+      {
+        "date": "2026-09-21",
+        "visitors": 2144
+      },
+      {
+        "date": "2026-09-22",
+        "visitors": 2026
+      },
+      {
+        "date": "2026-09-23",
+        "visitors": 345
+      }
+    ],
+    "phase_avg_daily": {
+      "before": 1866.5,
+      "during": 2196.0,
+      "after": 345.0
+    },
+    "during_vs_before_lift": 1.18,
+    "during_visitors": 8534,
+    "first_time_at_venue": 7336,
+    "returning": 1198,
+    "first_time_share": 0.86,
+    "home_origin_coverage": 4104,
+    "home_origin_top_zones": [
+      {
+        "zone": "Asakusa",
+        "visitors": 424
+      },
+      {
+        "zone": "Shinagawa",
+        "visitors": 395
+      },
+      {
+        "zone": "Odaiba",
+        "visitors": 344
+      },
+      {
+        "zone": "Ikebukuro",
+        "visitors": 331
+      },
+      {
+        "zone": "Tachikawa",
+        "visitors": 324
+      },
+      {
+        "zone": "Kawasaki",
+        "visitors": 281
+      },
+      {
+        "zone": "Shibuya",
+        "visitors": 252
+      },
+      {
+        "zone": "Makuhari / Chiba",
+        "visitors": 242
+      },
+      {
+        "zone": "Shinjuku",
+        "visitors": 224
+      },
+      {
+        "zone": "Omiya / Saitama",
+        "visitors": 217
+      },
+      {
+        "zone": "Tokyo Disney Resort / Maihama",
+        "visitors": 190
+      },
+      {
+        "zone": "Yokohama Minato Mirai",
+        "visitors": 173
+      }
+    ],
+    "cross_visit_zones": [
+      {
+        "zone": "Odaiba",
+        "devices": 1861
+      },
+      {
+        "zone": "Asakusa",
+        "devices": 1518
+      },
+      {
+        "zone": "Shinagawa",
+        "devices": 1493
+      },
+      {
+        "zone": "Ginza",
+        "devices": 1330
+      },
+      {
+        "zone": "Shinjuku",
+        "devices": 1301
+      },
+      {
+        "zone": "Ikebukuro",
+        "devices": 1291
+      },
+      {
+        "zone": "Shibuya",
+        "devices": 1275
+      },
+      {
+        "zone": "Tachikawa",
+        "devices": 1082
+      },
+      {
+        "zone": "Kawasaki",
+        "devices": 939
+      },
+      {
+        "zone": "Makuhari / Chiba",
+        "devices": 882
+      },
+      {
+        "zone": "Yokohama Minato Mirai",
+        "devices": 859
+      },
+      {
+        "zone": "Omiya / Saitama",
+        "devices": 834
+      },
+      {
+        "zone": "Tokyo Disney Resort / Maihama",
+        "devices": 808
+      },
+      {
+        "zone": "Marunouchi / Tokyo Station",
+        "devices": 750
+      },
+      {
+        "zone": "Akihabara",
+        "devices": 619
+      }
+    ],
+    "cross_visit_poi_groups": [
+      {
+        "group": "Services & Business",
+        "visits": 31356
+      },
+      {
+        "group": "Food & Drink",
+        "visits": 28613
+      },
+      {
+        "group": "Shopping",
+        "visits": 20365
+      },
+      {
+        "group": "Transport & Travel",
+        "visits": 7806
+      },
+      {
+        "group": "Sports & Recreation",
+        "visits": 6898
+      },
+      {
+        "group": "Lifestyle Services",
+        "visits": 6535
+      },
+      {
+        "group": "Health Care",
+        "visits": 6435
+      },
+      {
+        "group": "Education",
+        "visits": 6034
+      },
+      {
+        "group": "Cultural & Historic",
+        "visits": 4535
+      },
+      {
+        "group": "Arts & Entertainment",
+        "visits": 3211
+      },
+      {
+        "group": "Community & Government",
+        "visits": 3030
+      },
+      {
+        "group": "Lodging",
+        "visits": 2622
+      }
+    ],
+    "cross_visit_poi_categories": [
+      {
+        "category": "japanese_restaurant",
+        "visits": 8033
+      },
+      {
+        "category": "rental_kiosk",
+        "visits": 7994
+      },
+      {
+        "category": "parking",
+        "visits": 3852
+      },
+      {
+        "category": "convenience_store",
+        "visits": 3590
+      },
+      {
+        "category": "atm",
+        "visits": 3492
+      },
+      {
+        "category": "park",
+        "visits": 2950
+      },
+      {
+        "category": "restaurant",
+        "visits": 2761
+      },
+      {
+        "category": "historic_site",
+        "visits": 2150
+      },
+      {
+        "category": "bar",
+        "visits": 2091
+      },
+      {
+        "category": "cafe",
+        "visits": 2023
+      },
+      {
+        "category": "hair_salon",
+        "visits": 1973
+      },
+      {
+        "category": "grocery_store",
+        "visits": 1846
+      },
+      {
+        "category": "pharmacy",
+        "visits": 1827
+      },
+      {
+        "category": "package_locker",
+        "visits": 1777
+      },
+      {
+        "category": "shopping",
+        "visits": 1724
+      },
+      {
+        "category": "professional_service",
+        "visits": 1598
+      },
+      {
+        "category": "party_and_event_planning",
+        "visits": 1563
+      },
+      {
+        "category": "hotel",
+        "visits": 1548
+      },
+      {
+        "category": "coffee_shop",
+        "visits": 1298
+      },
+      {
+        "category": "post_office",
+        "visits": 1271
+      }
+    ]
+  }
+}
