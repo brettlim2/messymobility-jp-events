@@ -225,21 +225,3 @@ export function FutureSlot({ label }: { label: string }) {
   )
 }
 
-export function DataQualityBanner({ window: w, caveats, label = 'Data quality', locale = 'en' }: { window?: { first: string; last: string; days: number }; caveats?: string[]; label?: string; locale?: 'en' | 'ja' }) {
-  const date = (value: string) => locale === 'ja'
-    ? new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'Asia/Tokyo' }).format(new Date(`${value.slice(0, 10)}T12:00:00+09:00`))
-    : value.slice(0, 10)
-  return (
-    <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-panel)] px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1">
-      <span className="text-[10px] uppercase tracking-[0.16em] text-[var(--mn-teal)]">{label}</span>
-      {w && (
-        <span className="font-mono text-[11px] text-[var(--mn-ice)]">
-          {date(w.first)} → {date(w.last)} · {locale === 'ja' ? `${w.days}日` : `${w.days}d`}
-        </span>
-      )}
-      {(caveats ?? []).map((c, i) => (
-        <span key={i} className="text-[11px] text-[var(--mn-mist)]">· {c}</span>
-      ))}
-    </div>
-  )
-}
