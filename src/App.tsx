@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useData } from './lib/useData'
-import { DataQualityBanner } from './components/ui'
 import { EventDashboard, type EventConfig } from './components/dashboards/EventDashboard'
 import { tgsText, type Locale } from './lib/tgsI18n'
 import type { JpData } from './lib/types'
@@ -15,14 +14,16 @@ function CrossEventStrip({ data, locale, onPick }: { data: JpData | null; locale
   if (!tgs || !oda) return null
   const xe = (data?.event as unknown as { _cross_event?: {
     zone_comention?: { shared_cross_zones?: string[] }
-    akihabara_affinity?: { makuhari_messe?: { affinity?: number | null }; odaiba?: { affinity?: number | null } }
+    akihabara_affinity?: { makuhari_messe?: number | null; odaiba?: number | null }
   } })?._cross_event
   const cards: { tab: Tab; label: string; venue: typeof tgs }[] = [
     { tab: 'capcom', label: L('CAPCOM × TGS', 'CAPCOM × TGS'), venue: tgs },
     { tab: 'fuji', label: L('Fuji TV × Odaiba', 'フジテレビ × お台場'), venue: oda },
   ]
-  const akiTgs = xe?.akihabara_affinity?.makuhari_messe?.affinity
-  const akiOda = xe?.akihabara_affinity?.odaiba?.affinity
+  const fmtShare = (v: number | null | undefined) =>
+    v == null ? '—' : `${Math.round(v * 1000) / 10}%`
+  const akiTgs = xe?.akihabara_affinity?.makuhari_messe
+  const akiOda = xe?.akihabara_affinity?.odaiba
   const shared = xe?.zone_comention?.shared_cross_zones ?? []
   return (
     <section className="vm-glass rounded-[var(--mn-radius-lg)] p-5 mb-4">
@@ -58,9 +59,8 @@ function CrossEventStrip({ data, locale, onPick }: { data: JpData | null; locale
         {L('Shared pull: ', '共通の回遊先：')}
         {shared.length ? shared.slice(0, 4).join(', ') : '—'}
         {(akiTgs != null || akiOda != null) && L(
-          `  ·  Akihabara affinity — TGS ${akiTgs ?? '—'}×, Odaiba ${akiOda ?? '—'}×.`,
-          `  ·  秋葉原アフィニティ — TGS ${akiTgs ?? '—'}×、お台場 ${akiOda ?? '—'}×。`)}
-        {L('  Device-level audience overlap requires the warehouse (gated).', '  端末レベルの重複はウェアハウスが必要（保留）。')}
+          `  ·  Akihabara share of cross-visits — TGS ${fmtShare(akiTgs)}, Odaiba ${fmtShare(akiOda)}.`,
+          `  ·  併訪に占める秋葉原 — TGS ${fmtShare(akiTgs)}、お台場 ${fmtShare(akiOda)}。`)}
       </p>
     </section>
   )
@@ -159,14 +159,6 @@ export function App() {
       </header>
 
       <main className="mx-auto max-w-[1400px] px-4 py-5 lg:px-8">
-        <div className="mb-4">
-          <DataQualityBanner window={data?.reference?.window}
-            label={tgsText(locale, 'dataQuality')}
-            locale={locale}
-            caveats={locale === 'ja'
-              ? ['国籍情報は一部のローミング／外国通信事業者の端末に限られます。', '会場の対象範囲は概略の多角形です。']
-              : data?.reference?.caveats?.slice(1)} />
-        </div>
         {loading ? (
           <div className="py-24 text-center text-[13px] text-[var(--mn-mist)]">{locale === 'ja' ? '日本の移動データを読み込み中…' : 'Loading Japan mobility data…'}</div>
         ) : (
@@ -178,8 +170,8 @@ export function App() {
         )}
         <footer className="mt-8 border-t border-[var(--mn-wire)] pt-4 text-[10px] text-[var(--mn-faint)]">
           {locale === 'ja'
-            ? 'MessyNet · 日本の移動パネル（Factori）、2026年9月16〜23日（23日は日本時間08:59まで）。パネル推計であり、全数調査ではありません。'
-            : 'MessyNet · Signal in the Dark — Japan mobility panel (Factori), Sep 16–23 2026 (Sep 23 partial through 08:59 JST). Panel estimates, not census; patterns over absolute counts.'}
+            ? 'MessyNet · Signal in the Dark — 日本の移動パネル、2026年9月16〜23日（23日は日本時間08:59まで）。パネル推計であり、全数調査ではありません。'
+            : 'MessyNet · Signal in the Dark — Japan mobility panel, Sep 16–23 2026 (Sep 23 partial through 08:59 JST). Panel estimates, not census; patterns over absolute counts.'}
         </footer>
       </main>
     </div>

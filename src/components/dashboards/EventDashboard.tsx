@@ -262,7 +262,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         </GlassPanel>
       </div>
       {reference?.caveats?.length ? (
-        <p className="text-[11px] text-[var(--mn-faint)]">{isTgs ? t('panelCaveat') : reference.caveats[0]}</p>
+        <p className="text-[11px] text-[var(--mn-faint)]">{t('panelCaveat')}</p>
       ) : null}
     </div>
   )

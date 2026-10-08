@@ -248,8 +248,8 @@ export function ShowNightChart({ ne, locale = 'en' }: { ne: NaturalExperiment; l
         {lift != null && lift < 1
           ? L('Canceled nights drew MORE than show nights — footfall tracks the holiday, not the show.',
               '中止日の方がショー日より多い——来訪は祝日によるもので、ショーではありません。')
-          : L('Day-total devices (campus box). Evening-hour contrast needs the warehouse.',
-              '日合計端末数（キャンパス範囲）。時間帯別はウェアハウスが必要です。')}
+          : L('Day-total devices in the venue area. Evening-hour contrast is not available in this export.',
+              '会場周辺の日合計端末数。この出力では時間帯別の比較はありません。')}
       </p>
     </div>
   )

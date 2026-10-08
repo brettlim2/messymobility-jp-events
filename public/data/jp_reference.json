@@ -5,10 +5,10 @@
     "days": 8
   },
   "panel": {
-    "note": "Factori SDK panel; device-ids inflated by MAID churn. Patterns over absolute counts."
+    "note": "Japan mobility panel; device-ids inflated by identifier churn. Patterns over absolute counts."
   },
   "caveats": [
-    "Panel estimates (Factori SDK), not census; patterns over absolute counts.",
+    "Panel estimates, not census; patterns over absolute counts.",
     "Nationality is partial \u2014 roaming / foreign-carrier devices only.",
     "Venue footprints are approximate (hand-built polygons)."
   ],
