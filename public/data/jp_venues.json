@@ -1,1 +1,22 @@
-{}
+{
+  "makuhari_messe": {
+    "mall_id": "makuhari_messe",
+    "name": "Makuhari Messe",
+    "centroid": {
+      "lng": 140.035,
+      "lat": 35.648
+    },
+    "structure": "convention_center",
+    "event": "Tokyo Game Show 2026 (CAPCOM)"
+  },
+  "odaiba": {
+    "mall_id": "odaiba",
+    "name": "Odaiba (Fuji TV waterfront)",
+    "centroid": {
+      "lng": 139.7742,
+      "lat": 35.6276
+    },
+    "structure": "waterfront_entertainment",
+    "event": "Odaiba Drone Show 2026 (Fuji TV waterfront)"
+  }
+}

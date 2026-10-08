@@ -42,7 +42,7 @@
     "phase_avg_daily": {
       "before": 1699.0,
       "during": 1715.6,
-      "after": 1027.5
+      "after": 1830.0
     },
     "during_vs_before_lift": 1.01,
     "during_visitors": 6915,
@@ -52,114 +52,140 @@
     "home_origin_coverage": 3888,
     "home_origin_top_zones": [
       {
-        "zone": "Makuhari / Chiba",
-        "visitors": 1916
-      },
-      {
         "zone": "Asakusa",
-        "visitors": 348
+        "visitors": 348,
+        "share": 0.2439
       },
       {
         "zone": "Tokyo Disney Resort / Maihama",
-        "visitors": 285
+        "visitors": 285,
+        "share": 0.1997
       },
       {
         "zone": "Ikebukuro",
-        "visitors": 161
+        "visitors": 161,
+        "share": 0.1128
       },
       {
         "zone": "Omiya / Saitama",
-        "visitors": 155
+        "visitors": 155,
+        "share": 0.1086
       },
       {
         "zone": "Tachikawa",
-        "visitors": 128
-      },
-      {
-        "zone": "Narita Airport",
-        "visitors": 108
+        "visitors": 128,
+        "share": 0.0897
       },
       {
         "zone": "Shibuya",
-        "visitors": 91
+        "visitors": 91,
+        "share": 0.0638
       },
       {
         "zone": "Kawasaki",
-        "visitors": 79
+        "visitors": 79,
+        "share": 0.0554
       },
       {
         "zone": "Yokohama Minato Mirai",
-        "visitors": 61
+        "visitors": 61,
+        "share": 0.0427
       },
       {
         "zone": "Shinjuku",
-        "visitors": 60
+        "visitors": 60,
+        "share": 0.042
       },
       {
         "zone": "Shinagawa",
-        "visitors": 59
+        "visitors": 59,
+        "share": 0.0413
       }
     ],
     "cross_visit_zones": [
       {
-        "zone": "Makuhari / Chiba",
-        "devices": 5238
-      },
-      {
         "zone": "Asakusa",
-        "devices": 1343
+        "devices": 1343,
+        "share": 0.1434,
+        "affinity": 3.28
       },
       {
         "zone": "Tokyo Disney Resort / Maihama",
-        "devices": 1065
+        "devices": 1065,
+        "share": 0.1137,
+        "affinity": null
       },
       {
         "zone": "Ikebukuro",
-        "devices": 751
+        "devices": 751,
+        "share": 0.0802,
+        "affinity": null
       },
       {
         "zone": "Marunouchi / Tokyo Station",
-        "devices": 690
+        "devices": 690,
+        "share": 0.0737,
+        "affinity": null
       },
       {
         "zone": "Shinjuku",
-        "devices": 676
+        "devices": 676,
+        "share": 0.0722,
+        "affinity": 0.83
       },
       {
         "zone": "Akihabara",
-        "devices": 650
+        "devices": 650,
+        "share": 0.0694,
+        "affinity": null
       },
       {
         "zone": "Narita Airport",
-        "devices": 638
+        "devices": 638,
+        "share": 0.0681,
+        "affinity": null
       },
       {
         "zone": "Omiya / Saitama",
-        "devices": 627
+        "devices": 627,
+        "share": 0.0669,
+        "affinity": 0.63
       },
       {
         "zone": "Ginza",
-        "devices": 583
+        "devices": 583,
+        "share": 0.0622,
+        "affinity": null
       },
       {
         "zone": "Shinagawa",
-        "devices": 530
+        "devices": 530,
+        "share": 0.0566,
+        "affinity": null
       },
       {
         "zone": "Shibuya",
-        "devices": 527
+        "devices": 527,
+        "share": 0.0563,
+        "affinity": null
       },
       {
         "zone": "Tachikawa",
-        "devices": 495
+        "devices": 495,
+        "share": 0.0528,
+        "affinity": 0.54
       },
       {
         "zone": "Yokohama Minato Mirai",
-        "devices": 418
+        "devices": 418,
+        "share": 0.0446,
+        "affinity": 0.51
       },
       {
         "zone": "Kawasaki",
-        "devices": 374
+        "devices": 374,
+        "share": 0.0399,
+        "affinity": null
       }
     ],
     "cross_visit_poi_groups": [
@@ -214,86 +240,331 @@
     ],
     "cross_visit_poi_categories": [
       {
-        "category": "rental_kiosk",
-        "visits": 8952
-      },
-      {
         "category": "japanese_restaurant",
-        "visits": 6943
-      },
-      {
-        "category": "convenience_store",
-        "visits": 3814
+        "visits": 6943,
+        "share": 0.1952
       },
       {
         "category": "park",
-        "visits": 3678
-      },
-      {
-        "category": "atm",
-        "visits": 2982
-      },
-      {
-        "category": "parking",
-        "visits": 2960
+        "visits": 3678,
+        "share": 0.1034
       },
       {
         "category": "historic_site",
-        "visits": 2463
+        "visits": 2463,
+        "share": 0.0693
       },
       {
         "category": "cafe",
-        "visits": 2302
+        "visits": 2302,
+        "share": 0.0647
       },
       {
         "category": "pharmacy",
-        "visits": 2012
+        "visits": 2012,
+        "share": 0.0566
       },
       {
         "category": "hair_salon",
-        "visits": 2004
+        "visits": 2004,
+        "share": 0.0563
       },
       {
         "category": "restaurant",
-        "visits": 1921
+        "visits": 1921,
+        "share": 0.054
       },
       {
         "category": "post_office",
-        "visits": 1800
+        "visits": 1800,
+        "share": 0.0506
       },
       {
         "category": "grocery_store",
-        "visits": 1699
+        "visits": 1699,
+        "share": 0.0478
       },
       {
         "category": "hotel",
-        "visits": 1623
+        "visits": 1623,
+        "share": 0.0456
       },
       {
         "category": "party_and_event_planning",
-        "visits": 1598
+        "visits": 1598,
+        "share": 0.0449
       },
       {
         "category": "package_locker",
-        "visits": 1592
+        "visits": 1592,
+        "share": 0.0448
       },
       {
         "category": "travel_and_transportation",
-        "visits": 1546
+        "visits": 1546,
+        "share": 0.0435
       },
       {
         "category": "shopping",
-        "visits": 1540
+        "visits": 1540,
+        "share": 0.0433
       },
       {
         "category": "bar",
-        "visits": 1434
+        "visits": 1434,
+        "share": 0.0403
       },
       {
         "category": "hospital",
-        "visits": 1411
+        "visits": 1411,
+        "share": 0.0397
       }
-    ]
+    ],
+    "window": {
+      "before": [
+        "2026-09-16"
+      ],
+      "during": [
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21"
+      ],
+      "after": [
+        "2026-09-22"
+      ]
+    },
+    "partial_footfall_day": "2026-09-23",
+    "after_insufficient": false,
+    "footprint": "legacy_campus_box",
+    "daily_counts": {
+      "2026-09-16": 1699,
+      "2026-09-17": 1795,
+      "2026-09-18": 1838,
+      "2026-09-19": 1858,
+      "2026-09-20": 1658,
+      "2026-09-21": 1429,
+      "2026-09-22": 1830,
+      "2026-09-23": 225
+    },
+    "daily_counts_campus": {
+      "2026-09-16": 1699,
+      "2026-09-17": 1795,
+      "2026-09-18": 1838,
+      "2026-09-19": 1858,
+      "2026-09-20": 1658,
+      "2026-09-21": 1429,
+      "2026-09-22": 1830,
+      "2026-09-23": 225
+    },
+    "during_vs_before_lift_campus": 1.01,
+    "normalization": {
+      "basis": "dau",
+      "method": "share of nationwide daily-active devices (per 100k) from jp_poc_readout panel; placebo = equal-length sliding windows on the same venue series",
+      "panel_venues": [
+        "nationwide_dau"
+      ],
+      "control_venues": [],
+      "during_dates": [
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21"
+      ],
+      "during_share_pct": 45.2856,
+      "baseline_share_pct": 50.6336,
+      "effect_pts": -5.3479,
+      "relative_pct": -10.6,
+      "placebo_sd_pts": 11.8082,
+      "placebo_n": 3,
+      "mde_pts": 33.063,
+      "mde_relative_pct": 65.3,
+      "detected": false,
+      "dau_share_per_100k": {
+        "during": 45.286,
+        "baseline": 50.634,
+        "effect": -5.348,
+        "series": {
+          "2026-09-16": 50.634,
+          "2026-09-17": 52.125,
+          "2026-09-18": 58.03,
+          "2026-09-19": 46.82,
+          "2026-09-20": 38.937,
+          "2026-09-21": 30.515,
+          "2026-09-22": 38.73,
+          "2026-09-23": 13.819
+        }
+      },
+      "verdict": "DAU share during 45.29 vs baseline 50.63 per 100k (-10.6% relative); INSIDE the ±MDE noise floor — not distinguishable from zero (MDE ±33.063, placebo n=3). Campus-box series; re-run jp_event_readout.py on japan_full.duckdb for tight footprint + control venues.",
+      "legacy_campus_box": true
+    },
+    "day_tags": {
+      "2026-09-16": {
+        "dow": "Wed",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-17": {
+        "dow": "Thu",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-18": {
+        "dow": "Fri",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-19": {
+        "dow": "Sat",
+        "weekend": true,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-20": {
+        "dow": "Sun",
+        "weekend": true,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": null,
+          "wet_hours": null,
+          "station": "seed",
+          "rain_day": true,
+          "note": "typhoon influence / wet period"
+        },
+        "rain": true
+      },
+      "2026-09-21": {
+        "dow": "Mon",
+        "weekend": false,
+        "holiday": "Respect for the Aged Day",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": null,
+          "wet_hours": null,
+          "station": "seed",
+          "rain_day": true,
+          "note": "typhoon influence / wet period"
+        },
+        "rain": true
+      },
+      "2026-09-22": {
+        "dow": "Tue",
+        "weekend": false,
+        "holiday": "Citizens' Holiday",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-23": {
+        "dow": "Wed",
+        "weekend": false,
+        "holiday": "Autumnal Equinox",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        },
+        "partial": true
+      }
+    },
+    "holiday_overlap_note": "Event window overlaps public holidays: 2026-09-21 (Respect for the Aged Day). Raw counts are confounded by the holiday; the DAU-share normalization controls for panel size.",
+    "natural_experiment": {
+      "hours": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "show_days": [
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20"
+      ],
+      "canceled_days": [
+        "2026-09-21"
+      ],
+      "baseline_days": [
+        "2026-09-16"
+      ],
+      "avg_devices_show": 1787.2,
+      "avg_devices_canceled": 1429.0,
+      "avg_devices_baseline": 1699.0,
+      "show_vs_canceled_lift": 1.25,
+      "show_vs_baseline_lift": 1.05,
+      "grain": "day",
+      "method": "Day-total campus-box devices on show vs canceled vs baseline days. Evening-hour contrast requires jp_event_readout.py against japan_full.duckdb."
+    },
+    "hourly_profile_aggregate": {
+      "0": 21,
+      "1": 18,
+      "2": 9,
+      "3": 11,
+      "4": 13,
+      "5": 22,
+      "6": 19,
+      "7": 57,
+      "8": 60,
+      "9": 254,
+      "10": 146,
+      "11": 145,
+      "12": 177,
+      "13": 152,
+      "14": 159,
+      "15": 131,
+      "16": 139,
+      "17": 131,
+      "18": 94,
+      "19": 74,
+      "20": 46,
+      "21": 29,
+      "22": 20,
+      "23": 29
+    },
+    "hourly_profile_note": "POC sample aggregate across all days (not per-day)."
   },
   "odaiba": {
     "venue": "Odaiba (Fuji TV waterfront)",
@@ -338,7 +609,7 @@
     "phase_avg_daily": {
       "before": 1866.5,
       "during": 2196.0,
-      "after": 345.0
+      "after": null
     },
     "during_vs_before_lift": 1.18,
     "during_visitors": 8534,
@@ -349,113 +620,144 @@
     "home_origin_top_zones": [
       {
         "zone": "Asakusa",
-        "visitors": 424
+        "visitors": 424,
+        "share": 0.1389
       },
       {
         "zone": "Shinagawa",
-        "visitors": 395
-      },
-      {
-        "zone": "Odaiba",
-        "visitors": 344
+        "visitors": 395,
+        "share": 0.1294
       },
       {
         "zone": "Ikebukuro",
-        "visitors": 331
+        "visitors": 331,
+        "share": 0.1084
       },
       {
         "zone": "Tachikawa",
-        "visitors": 324
+        "visitors": 324,
+        "share": 0.1061
       },
       {
         "zone": "Kawasaki",
-        "visitors": 281
+        "visitors": 281,
+        "share": 0.092
       },
       {
         "zone": "Shibuya",
-        "visitors": 252
+        "visitors": 252,
+        "share": 0.0825
       },
       {
         "zone": "Makuhari / Chiba",
-        "visitors": 242
+        "visitors": 242,
+        "share": 0.0793
       },
       {
         "zone": "Shinjuku",
-        "visitors": 224
+        "visitors": 224,
+        "share": 0.0734
       },
       {
         "zone": "Omiya / Saitama",
-        "visitors": 217
+        "visitors": 217,
+        "share": 0.0711
       },
       {
         "zone": "Tokyo Disney Resort / Maihama",
-        "visitors": 190
+        "visitors": 190,
+        "share": 0.0622
       },
       {
         "zone": "Yokohama Minato Mirai",
-        "visitors": 173
+        "visitors": 173,
+        "share": 0.0567
       }
     ],
     "cross_visit_zones": [
       {
-        "zone": "Odaiba",
-        "devices": 1861
-      },
-      {
         "zone": "Asakusa",
-        "devices": 1518
+        "devices": 1518,
+        "share": 0.1013,
+        "affinity": 2.32
       },
       {
         "zone": "Shinagawa",
-        "devices": 1493
+        "devices": 1493,
+        "share": 0.0997,
+        "affinity": null
       },
       {
         "zone": "Ginza",
-        "devices": 1330
+        "devices": 1330,
+        "share": 0.0888,
+        "affinity": null
       },
       {
         "zone": "Shinjuku",
-        "devices": 1301
+        "devices": 1301,
+        "share": 0.0868,
+        "affinity": 1.0
       },
       {
         "zone": "Ikebukuro",
-        "devices": 1291
+        "devices": 1291,
+        "share": 0.0862,
+        "affinity": null
       },
       {
         "zone": "Shibuya",
-        "devices": 1275
+        "devices": 1275,
+        "share": 0.0851,
+        "affinity": null
       },
       {
         "zone": "Tachikawa",
-        "devices": 1082
+        "devices": 1082,
+        "share": 0.0722,
+        "affinity": 0.74
       },
       {
         "zone": "Kawasaki",
-        "devices": 939
+        "devices": 939,
+        "share": 0.0627,
+        "affinity": null
       },
       {
         "zone": "Makuhari / Chiba",
-        "devices": 882
+        "devices": 882,
+        "share": 0.0589,
+        "affinity": 1.49
       },
       {
         "zone": "Yokohama Minato Mirai",
-        "devices": 859
+        "devices": 859,
+        "share": 0.0573,
+        "affinity": 0.65
       },
       {
         "zone": "Omiya / Saitama",
-        "devices": 834
+        "devices": 834,
+        "share": 0.0557,
+        "affinity": 0.52
       },
       {
         "zone": "Tokyo Disney Resort / Maihama",
-        "devices": 808
+        "devices": 808,
+        "share": 0.0539,
+        "affinity": null
       },
       {
         "zone": "Marunouchi / Tokyo Station",
-        "devices": 750
+        "devices": 750,
+        "share": 0.0501,
+        "affinity": null
       },
       {
         "zone": "Akihabara",
-        "devices": 619
+        "devices": 619,
+        "share": 0.0413,
+        "affinity": null
       }
     ],
     "cross_visit_poi_groups": [
@@ -511,84 +813,367 @@
     "cross_visit_poi_categories": [
       {
         "category": "japanese_restaurant",
-        "visits": 8033
-      },
-      {
-        "category": "rental_kiosk",
-        "visits": 7994
-      },
-      {
-        "category": "parking",
-        "visits": 3852
-      },
-      {
-        "category": "convenience_store",
-        "visits": 3590
-      },
-      {
-        "category": "atm",
-        "visits": 3492
+        "visits": 8033,
+        "share": 0.2205
       },
       {
         "category": "park",
-        "visits": 2950
+        "visits": 2950,
+        "share": 0.081
       },
       {
         "category": "restaurant",
-        "visits": 2761
+        "visits": 2761,
+        "share": 0.0758
       },
       {
         "category": "historic_site",
-        "visits": 2150
+        "visits": 2150,
+        "share": 0.059
       },
       {
         "category": "bar",
-        "visits": 2091
+        "visits": 2091,
+        "share": 0.0574
       },
       {
         "category": "cafe",
-        "visits": 2023
+        "visits": 2023,
+        "share": 0.0555
       },
       {
         "category": "hair_salon",
-        "visits": 1973
+        "visits": 1973,
+        "share": 0.0542
       },
       {
         "category": "grocery_store",
-        "visits": 1846
+        "visits": 1846,
+        "share": 0.0507
       },
       {
         "category": "pharmacy",
-        "visits": 1827
+        "visits": 1827,
+        "share": 0.0501
       },
       {
         "category": "package_locker",
-        "visits": 1777
+        "visits": 1777,
+        "share": 0.0488
       },
       {
         "category": "shopping",
-        "visits": 1724
+        "visits": 1724,
+        "share": 0.0473
       },
       {
         "category": "professional_service",
-        "visits": 1598
+        "visits": 1598,
+        "share": 0.0439
       },
       {
         "category": "party_and_event_planning",
-        "visits": 1563
+        "visits": 1563,
+        "share": 0.0429
       },
       {
         "category": "hotel",
-        "visits": 1548
+        "visits": 1548,
+        "share": 0.0425
       },
       {
         "category": "coffee_shop",
-        "visits": 1298
+        "visits": 1298,
+        "share": 0.0356
       },
       {
         "category": "post_office",
-        "visits": 1271
+        "visits": 1271,
+        "share": 0.0349
       }
-    ]
+    ],
+    "window": {
+      "before": [
+        "2026-09-16",
+        "2026-09-17"
+      ],
+      "during": [
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22"
+      ],
+      "after": []
+    },
+    "partial_footfall_day": "2026-09-23",
+    "after_insufficient": true,
+    "footprint": "legacy_campus_box",
+    "daily_counts": {
+      "2026-09-16": 1947,
+      "2026-09-17": 1786,
+      "2026-09-18": 1906,
+      "2026-09-19": 2274,
+      "2026-09-20": 2630,
+      "2026-09-21": 2144,
+      "2026-09-22": 2026,
+      "2026-09-23": 345
+    },
+    "daily_counts_campus": {
+      "2026-09-16": 1947,
+      "2026-09-17": 1786,
+      "2026-09-18": 1906,
+      "2026-09-19": 2274,
+      "2026-09-20": 2630,
+      "2026-09-21": 2144,
+      "2026-09-22": 2026,
+      "2026-09-23": 345
+    },
+    "during_vs_before_lift_campus": 1.18,
+    "normalization": {
+      "basis": "dau",
+      "method": "share of nationwide daily-active devices (per 100k) from jp_poc_readout panel; placebo = equal-length sliding windows on the same venue series",
+      "panel_venues": [
+        "nationwide_dau"
+      ],
+      "control_venues": [],
+      "during_dates": [
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22"
+      ],
+      "during_share_pct": 53.5813,
+      "baseline_share_pct": 54.9441,
+      "effect_pts": -1.3629,
+      "relative_pct": -2.5,
+      "placebo_sd_pts": 7.4586,
+      "placebo_n": 3,
+      "mde_pts": 20.884,
+      "mde_relative_pct": 38.0,
+      "detected": false,
+      "dau_share_per_100k": {
+        "during": 53.581,
+        "baseline": 54.944,
+        "effect": -1.363,
+        "series": {
+          "2026-09-16": 58.024,
+          "2026-09-17": 51.864,
+          "2026-09-18": 60.177,
+          "2026-09-19": 57.303,
+          "2026-09-20": 61.764,
+          "2026-09-21": 45.783,
+          "2026-09-22": 42.879,
+          "2026-09-23": 21.188
+        }
+      },
+      "verdict": "DAU share during 53.58 vs baseline 54.94 per 100k (-2.5% relative); INSIDE the ±MDE noise floor — not distinguishable from zero (MDE ±20.884, placebo n=3). Campus-box series; re-run jp_event_readout.py on japan_full.duckdb for tight footprint + control venues.",
+      "legacy_campus_box": true
+    },
+    "day_tags": {
+      "2026-09-16": {
+        "dow": "Wed",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-17": {
+        "dow": "Thu",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-18": {
+        "dow": "Fri",
+        "weekend": false,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-19": {
+        "dow": "Sat",
+        "weekend": true,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-20": {
+        "dow": "Sun",
+        "weekend": true,
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": null,
+          "wet_hours": null,
+          "station": "seed",
+          "rain_day": true,
+          "note": "all four drone shows canceled (typhoon)"
+        },
+        "rain": true
+      },
+      "2026-09-21": {
+        "dow": "Mon",
+        "weekend": false,
+        "holiday": "Respect for the Aged Day",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": null,
+          "wet_hours": null,
+          "station": "seed",
+          "rain_day": true,
+          "note": "all four drone shows canceled (typhoon)"
+        },
+        "rain": true
+      },
+      "2026-09-22": {
+        "dow": "Tue",
+        "weekend": false,
+        "holiday": "Citizens' Holiday",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        }
+      },
+      "2026-09-23": {
+        "dow": "Wed",
+        "weekend": false,
+        "holiday": "Autumnal Equinox",
+        "weather": {
+          "temp_mean_c": null,
+          "temp_max_c": null,
+          "rain_mm": 0,
+          "wet_hours": 0,
+          "station": "seed",
+          "rain_day": false
+        },
+        "partial": true
+      }
+    },
+    "holiday_overlap_note": "Event window overlaps public holidays: 2026-09-21 (Respect for the Aged Day), 2026-09-22 (Citizens' Holiday). Raw counts are confounded by the holiday; the DAU-share normalization controls for panel size.",
+    "natural_experiment": {
+      "hours": [
+        19,
+        20,
+        21,
+        22
+      ],
+      "show_days": [
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-22"
+      ],
+      "canceled_days": [
+        "2026-09-20",
+        "2026-09-21"
+      ],
+      "baseline_days": [
+        "2026-09-16",
+        "2026-09-17"
+      ],
+      "avg_devices_show": 2068.7,
+      "avg_devices_canceled": 2387.0,
+      "avg_devices_baseline": 1866.5,
+      "show_vs_canceled_lift": 0.87,
+      "show_vs_baseline_lift": 1.11,
+      "grain": "day",
+      "method": "Day-total campus-box devices on show vs canceled vs baseline days. Evening-hour contrast requires jp_event_readout.py against japan_full.duckdb."
+    },
+    "hourly_profile_aggregate": {
+      "0": 11,
+      "1": 9,
+      "2": 10,
+      "3": 14,
+      "4": 12,
+      "5": 13,
+      "6": 22,
+      "7": 37,
+      "8": 14,
+      "9": 121,
+      "10": 96,
+      "11": 94,
+      "12": 95,
+      "13": 127,
+      "14": 95,
+      "15": 107,
+      "16": 96,
+      "17": 71,
+      "18": 64,
+      "19": 60,
+      "20": 34,
+      "21": 30,
+      "22": 18,
+      "23": 19
+    },
+    "hourly_profile_note": "POC sample aggregate across all days (not per-day)."
+  },
+  "_meta": {
+    "enriched_from": "/Users/brettlim/Documents/GitHub/VectorMobility MVP/.claude/worktrees/japan-mobility-dataset-setup-7f8f7f/data/analytics_out_jp_full/jp_event_readout.json",
+    "dau_source": "/Users/brettlim/Documents/GitHub/VectorMobility MVP/.claude/worktrees/japan-mobility-dataset-setup-7f8f7f/data/analytics_out_jp2/jp_poc_readout.json",
+    "warehouse_status": "unavailable_on_current_vms",
+    "next_step": "VERASET_DB=~/mobility/data/japan_full.duckdb python3 scripts/jp_event_readout.py"
+  },
+  "_cross_event": {
+    "venues": [
+      "makuhari_messe",
+      "odaiba"
+    ],
+    "overlap_devices": null,
+    "zone_comention": {
+      "odaiba_in_tgs_cross": null,
+      "makuhari_in_odaiba_home": {
+        "zone": "Makuhari / Chiba",
+        "visitors": 242,
+        "share": 0.0793
+      },
+      "shared_cross_zones": [
+        "Akihabara",
+        "Asakusa",
+        "Ginza",
+        "Ikebukuro",
+        "Kawasaki",
+        "Marunouchi / Tokyo Station",
+        "Omiya / Saitama",
+        "Shibuya"
+      ]
+    },
+    "akihabara_affinity": {
+      "makuhari_messe": {
+        "share": 0.0694,
+        "affinity": null
+      },
+      "odaiba": {
+        "share": 0.0413,
+        "affinity": null
+      }
+    },
+    "note": "Device-level overlap requires japan_full.duckdb. Zone co-mention from campus catchments shown instead."
   }
 }

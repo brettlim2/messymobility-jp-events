@@ -7,6 +7,7 @@ export interface GroupCount { group: string; visits: number; visitors?: number }
 export interface Hall { state_id: string; name: string; kind: string; polygon: [number, number][]; devices: number; share: number }
 export interface DayTag { dow: string; weekend: boolean; holiday?: string; weather?: { temp_mean_c?: number | null; temp_max_c?: number | null; rain_mm?: number; wet_hours?: number; station?: string } }
 export interface Normalization {
+  basis?: 'dau' | 'control_venues'
   method: string
   panel_venues: string[]
   control_venues: string[]
@@ -20,9 +21,24 @@ export interface Normalization {
   mde_pts: number
   mde_relative_pct: number | null
   detected: boolean
-  dau_share_per_100k: { during: number; baseline: number; effect: number }
-  share_series: Record<string, Record<string, number>>
+  dau_share_per_100k: { during: number; baseline: number; effect: number; series?: Record<string, number> }
+  share_series?: Record<string, Record<string, number>>
+  legacy_campus_box?: boolean
   verdict: string
+}
+
+export interface NaturalExperiment {
+  grain: string
+  hours: number[]
+  show_days: string[]
+  canceled_days: string[]
+  baseline_days: string[]
+  avg_devices_show: number | null
+  avg_devices_canceled: number | null
+  avg_devices_baseline: number | null
+  show_vs_canceled_lift: number | null
+  show_vs_baseline_lift: number | null
+  method: string
 }
 
 export interface EventVenue {
@@ -45,6 +61,9 @@ export interface EventVenue {
   day_tags?: Record<string, DayTag>
   holiday_overlap_note?: string
   normalization?: Normalization | null
+  natural_experiment?: NaturalExperiment | null
+  partial_footfall_day?: string | null
+  after_insufficient?: boolean
   phase_avg_daily: { before: number | null; during: number | null; after: number | null }
   phase_avg_daily_campus?: { before: number | null; during: number | null; after: number | null }
   during_vs_before_lift: number | null
@@ -56,10 +75,10 @@ export interface EventVenue {
   returning: number
   first_time_share: number | null
   home_origin_coverage: number
-  home_origin_top_zones: { zone: string; visitors: number }[]
-  cross_visit_zones: { zone: string; devices: number }[]
-  cross_visit_poi_groups: { group: string; visits: number }[]
-  cross_visit_poi_categories: { category: string; visits: number }[]
+  home_origin_top_zones: { zone: string; visitors: number; share?: number; affinity?: number | null }[]
+  cross_visit_zones: { zone: string; devices: number; share?: number; affinity?: number | null }[]
+  cross_visit_poi_groups: { group: string; visits: number; share?: number }[]
+  cross_visit_poi_categories: { category: string; visits: number; share?: number }[]
 }
 export type EventReadout = Record<string, EventVenue>
 
@@ -134,6 +153,10 @@ export interface TgsSocialPost {
   plays: number | null
   source_url: string
   caption: string
+  voice?: string
+  post_type?: string
+  ip_topics?: string[]
+  lang?: string
 }
 export interface SocialVenue {
   posts: number
@@ -151,6 +174,15 @@ export interface SocialVenue {
   }>
   by_voice?: Record<string, { posts: number; engagement: number }>
   by_post_type?: Record<string, { posts: number; engagement: number }>
+  voice_mix?: Record<string, number>
+  content_type_mix?: Record<string, number>
+  language_mix?: Record<string, number>
+  ip_topics?: { topic: string; posts: number }[]
+  language_by_day?: Record<string, Record<string, number>>
+  engagement_stats?: {
+    total: number; n: number; median: number; mean: number; p90: number; max: number
+    top_post_share: number; outlier: boolean
+  }
   top_posts?: SocialPost[]
   footfall_corr?: { pearson_r: number | null; n_days: number; note: string }
   capcom_posts?: number

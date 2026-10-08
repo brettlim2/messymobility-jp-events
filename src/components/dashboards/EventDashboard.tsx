@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import type { EventVenue, Reference, SocialVenue } from '../../lib/types'
 import { GlassPanel, SectionHeader, KpiTile, BarRow, DonutStat, FutureSlot, Empty, Kicker } from '../ui'
-import { fmtInt, fmtLift, fmtFloat } from '../../lib/format'
-import { TEAL_LT } from '../../lib/palette'
-import { seriesFrom, HallFootprintMap, EventPhaseChart, NormalizationPanel, TouristSplit, SocialStrip } from '../EventExtras'
+import { fmtLift, fmtFloat } from '../../lib/format'
+import { TEAL, TEAL_LT, VOLT, MIST, WIRE } from '../../lib/palette'
+import { seriesFrom, HallFootprintMap, EventPhaseChart, NormalizationPanel, TouristSplit, SocialStrip, ShowNightChart, ConversationInsights } from '../EventExtras'
 import { TgsSocialExplorer } from '../TgsSocialExplorer'
 import { tgsCopy, tgsGroup, tgsNumber, tgsText, tgsZone, type Locale } from '../../lib/tgsI18n'
 
@@ -15,15 +15,18 @@ export interface EventConfig {
   framing: string
   crossVisitNote: string
   highlightZones?: string[]
+  ja?: { title: string; eventLabel: string; framing: string; crossVisitNote: string }
 }
 
 export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
   { cfg: EventConfig; v: EventVenue | undefined; reference: Reference | null; social?: SocialVenue | null; locale?: Locale }) {
   const [footprint, setFootprint] = useState<'event' | 'campus'>('event')
+  const [showExplorer, setShowExplorer] = useState(false)
   const isTgs = cfg.venueKey === 'makuhari_messe'
   const isOdaiba = cfg.venueKey === 'odaiba'
   const t = (key: keyof typeof tgsCopy.en, values?: Record<string, string | number>) => tgsText(locale, key, values)
-  if (!v) return <Empty note={`${isTgs ? t('title') : cfg.title}: ${t('noEvent')}`} />
+  const cc = (locale === 'ja' && cfg.ja) ? cfg.ja : cfg
+  if (!v) return <Empty note={`${isTgs ? t('title') : cc.title}: ${t('noEvent')}`} />
 
   const eventSeries = seriesFrom(v, 'event')
   const campusSeries = seriesFrom(v, 'campus')
@@ -45,31 +48,33 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
   const highlightedZones = cfg.highlightZones?.map((zone) => tgsZone(zone, locale)) ?? []
   const percent = (part: number, whole: number) => whole ? tgsNumber(Math.round(part / whole * 1000) / 10, locale) : '—'
   const socialAnchor = isOdaiba ? 'odaiba-social' : 'tgs-social'
+  const L = (en: string, ja: string) => (locale === 'ja' ? ja : en)
+  const legacyFootprint = !v.footprint || v.footprint.startsWith('legacy')
+  const topIp = social?.ip_topics?.[0]?.topic
+  const ne = v.natural_experiment ?? null
 
   return (
     <div className="flex flex-col gap-4">
       <GlassPanel bright className="p-5">
-        <Kicker>{isTgs ? t('eventLabel') : cfg.eventLabel}</Kicker>
-        <h2 className="font-display text-[22px] text-[var(--mn-heading)] mt-1">{isTgs ? t('title') : cfg.title}</h2>
-        <p className="text-[12px] text-[var(--mn-mist)] mt-1.5 max-w-3xl leading-relaxed">{isTgs ? t('framing') : cfg.framing}</p>
+        <Kicker>{isTgs ? t('eventLabel') : cc.eventLabel}</Kicker>
+        <h2 className="font-display text-[22px] text-[var(--mn-heading)] mt-1">{isTgs ? t('title') : cc.title}</h2>
+        <p className="text-[12px] text-[var(--mn-mist)] mt-1.5 max-w-3xl leading-relaxed">{isTgs ? t('framing') : cc.framing}</p>
         {showSocial && <a href={`#${socialAnchor}`} className="mt-2 inline-block text-[11px] font-semibold text-[var(--mn-teal)] underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">{t(isOdaiba ? 'odaibaJump' : 'jump', { count: tgsNumber(social.posts, locale) })}</a>}
+        {/* Mobility KPIs are always visible; social KPIs are added alongside, never swapped in. */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-4">
-          {showSocial ? <>
-            <KpiTile label={isOdaiba ? t('odaibaSocialPosts') : t('socialPosts')} value={tgsNumber(social.posts, locale)} />
-            <KpiTile label={isOdaiba ? t('odaibaNamedEvent') : t('capcomPosts')} value={tgsNumber(isOdaiba ? (social.named_event_posts ?? 0) : (social.capcom_posts ?? 0), locale)} accent />
-            <KpiTile label={isOdaiba ? t('odaibaFujiMentions') : t('capcomMakuhari')} value={tgsNumber(isOdaiba ? (social.fuji_tv_mentions ?? 0) : (social.capcom_venue_mentions ?? 0), locale)} />
-            <KpiTile label={v.footprint ? t('eventHallVisitors') : t('campusDevices')} value={tgsNumber(v.visitors, locale)} />
-          </> : <>
-            <KpiTile label={isTgs && !v.footprint ? t('campusDevices') : t('eventHallVisitors')} value={fmtInt(v.visitors)}
-              sub={v.footprint_area_km2 ? `${v.footprint_area_km2} km² ${t('footprint')}` : undefined} />
-            <KpiTile label={isTgs && !v.window ? t('legacyLift') : t('duringBaseline')} value={headlineLift} accent
-              sub={isTgs && !v.window ? t('legacyLiftSub') : headlineSub} />
-            <KpiTile label={t('medianDwell')} value={`${fmtFloat(v.median_dwell_min)}m`} />
-            {v.tourist_share_during != null ? (
-              <KpiTile label={t('inboundShare')} value={`${Math.round(v.tourist_share_during * 100)}%`} sub={t('ofDuring')} />
-            ) : (
-              <KpiTile label={t('newVenue')} value={v.first_time_share == null ? '—' : `${Math.round(v.first_time_share * 100)}%`} sub={t('ofDuringWindow')} />
-            )}
+          <KpiTile label={legacyFootprint ? t('campusDevices') : t('eventHallVisitors')} value={tgsNumber(v.visitors, locale)}
+            sub={v.footprint_area_km2 ? `${v.footprint_area_km2} km² ${t('footprint')}` : undefined} />
+          <KpiTile label={t('duringBaseline')} value={headlineLift} accent sub={headlineSub} />
+          <KpiTile label={t('medianDwell')} value={`${fmtFloat(v.median_dwell_min)}m`} />
+          {v.tourist_share_during != null ? (
+            <KpiTile label={t('inboundShare')} value={`${Math.round(v.tourist_share_during * 100)}%`} sub={t('ofDuring')} />
+          ) : (
+            <KpiTile label={t('newVenue')} value={v.first_time_share == null ? '—' : `${Math.round(v.first_time_share * 100)}%`} sub={t('ofDuringWindow')} />
+          )}
+          {showSocial && <>
+            <KpiTile label={isOdaiba ? t('odaibaSocialPosts') : t('socialPosts')} value={tgsNumber(social.posts, locale)}
+              sub={L('conversation volume', '会話量')} />
+            {topIp && <KpiTile label={L('Top IP / topic', '主要IP・話題')} value={topIp} />}
           </>}
         </div>
         {v.holiday_overlap_note && (
@@ -82,6 +87,40 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
             {t('legacyWarning')}
           </p>
         )}
+      </GlassPanel>
+
+      <GlassPanel className="p-5">
+        <SectionHeader kicker={L('Verdict', '結論')} title={L('Did it work, for whom, what next?', '効果は？誰に？次は？')} />
+        <div className="grid gap-3 md:grid-cols-3">
+          {(() => {
+            const detected = norm?.detected
+            const liftBadge = norm ? (detected ? { c: VOLT, t: L('Detected', '検出') } : { c: MIST, t: L('Within noise', 'ノイズ内') }) : { c: MIST, t: L('n/a', '—') }
+            const neLift = ne?.show_vs_canceled_lift
+            const neBadge = neLift == null ? { c: MIST, t: L('n/a', '—') } : neLift < 1 ? { c: TEAL_LT, t: L('Holiday-driven', '祝日要因') } : { c: VOLT, t: L('Show-driven', 'ショー要因') }
+            const answers = [
+              { q: L('Did offline visitation move?', '来訪は動いたか？'), badge: liftBadge,
+                a: norm ? `${headlineLift} ${L('vs baseline', '対基準')} — ${detected ? L('outside the ±MDE noise floor', 'ノイズ下限を超える') : L('inside the ±MDE noise floor', 'ノイズ下限内')}. ${L('Normalized vs national DAU (campus footprint).', '全国DAUで正規化（キャンパス範囲）。')}` : L('Readout pending.', '集計待ち。') },
+              { q: L('Was it the event or the holiday?', 'イベントか祝日か？'), badge: neBadge,
+                a: neLift == null ? L('No show/canceled split available.', 'ショー／中止の比較不可。')
+                  : neLift < 1 ? L(`Canceled nights drew ${neLift}× the show nights — footfall tracks Silver Week, not the activation.`, `中止日はショー日の${neLift}倍——来訪はシルバーウィークに連動。`)
+                  : L(`Show nights drew ${neLift}× the canceled nights.`, `ショー日は中止日の${neLift}倍。`) },
+              { q: L('What drove the conversation?', '会話を動かしたのは？'), badge: { c: TEAL, t: L('Top IP', '主要IP') },
+                a: topIp ? (isOdaiba
+                    ? L(`${topIp} led the posts. Only ${social?.fuji_tv_mentions ?? 0} of ${social?.posts ?? 0} mention Fuji TV — this is character IP on the Fuji TV waterfront, not a Fuji TV campaign.`, `投稿は「${topIp}」が中心。フジテレビ言及は${social?.posts ?? 0}件中${social?.fuji_tv_mentions ?? 0}件のみ——フジテレビ企画ではなくキャラIP。`)
+                    : L(`${topIp} led the posts${social?.engagement_stats?.outlier ? '; engagement totals are skewed by one viral post (see below).' : '.'}`, `投稿は「${topIp}」が中心${social?.engagement_stats?.outlier ? '。合計は1件のバズ投稿に偏り（下記）。' : '。'}`))
+                  : L('Social corpus pending.', 'ソーシャル待ち。') },
+            ]
+            return answers.map((ans, i) => (
+              <div key={i} className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{ans.q}</h3>
+                  <span className="shrink-0 rounded-[4px] px-1.5 py-0.5 text-[9px] uppercase tracking-[0.1em]" style={{ background: WIRE, color: ans.badge.c }}>{ans.badge.t}</span>
+                </div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-[var(--mn-mist)]">{ans.a}</p>
+              </div>
+            ))
+          })()}
+        </div>
       </GlassPanel>
 
       {showSocial && <GlassPanel className="p-5">
@@ -156,15 +195,36 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
           <SectionHeader kicker={t('socialKicker')}
             title={social.feed_posts ? t(isOdaiba ? 'odaibaSocialTitle' : 'socialTitle') : t('socialFallbackTitle')}
             sub={social.feed_posts ? t(isOdaiba ? 'odaibaSocialSub' : 'socialSub') : t('socialFallbackSub')} />
-          {social.feed_posts ? <TgsSocialExplorer social={social} locale={locale} /> : <SocialStrip social={social} />}
+          {social.feed_posts ? (
+            <>
+              <ConversationInsights social={social} locale={locale} />
+              <div className="mt-4 border-t border-[var(--mn-wire)] pt-3">
+                <button type="button" onClick={() => setShowExplorer((s) => !s)}
+                  className="text-[11px] font-semibold text-[var(--mn-teal)] underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]"
+                  aria-expanded={showExplorer}>
+                  {showExplorer ? L('Hide post explorer', '投稿エクスプローラーを隠す')
+                    : L(`Browse ${social.posts} posts`, `${tgsNumber(social.posts, locale)}件の投稿を見る`)}
+                </button>
+                {showExplorer && <div className="mt-3"><TgsSocialExplorer social={social} locale={locale} /></div>}
+              </div>
+            </>
+          ) : <SocialStrip social={social} />}
         </GlassPanel>
       ) : (
         <FutureSlot label={isTgs ? t('missingSocial') : isOdaiba ? t('odaibaMissingSocial') : 'Social buzz for this IP/event overlays on the footfall curve once scraped.'} />
       )}
 
-      {(v.halls?.length || norm) && (
+      {(v.halls?.length || norm || ne) && (
         <div className="grid lg:grid-cols-2 gap-4">
-          {v.halls?.length ? (
+          {ne && (ne.avg_devices_show != null || ne.avg_devices_canceled != null) ? (
+            <GlassPanel className="p-5">
+              <SectionHeader kicker={L('Proof · natural experiment', '検証・自然実験')}
+                title={L('Show nights vs canceled nights', 'ショー日 対 中止日')}
+                sub={L('Same holiday week: nights the show ran vs nights it was canceled.',
+                       '同じ祝日週で、ショー実施日と中止日を比較。')} />
+              <ShowNightChart ne={ne} locale={locale} />
+            </GlassPanel>
+          ) : v.halls?.length ? (
             <GlassPanel className="p-5">
               <SectionHeader kicker={t('hallKicker')} title={t('hallTitle')} sub={t('hallSub')} />
               <HallFootprintMap halls={v.halls} />
@@ -173,7 +233,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
           {norm ? (
             <GlassPanel className="p-5">
               <SectionHeader kicker={t('normKicker')} title={t('normTitle')} sub={t('normSub')} />
-              <NormalizationPanel norm={norm} />
+              <NormalizationPanel norm={norm} dayTags={v.day_tags} locale={locale} />
             </GlassPanel>
           ) : null}
         </div>
@@ -194,7 +254,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
           ) : <Empty note={t('noOrigins')} />}
         </GlassPanel>
         <GlassPanel className="p-5">
-          <SectionHeader kicker={t('crossKicker')} title={t('crossTitle')} sub={isTgs ? t('crossSub') : cfg.crossVisitNote} />
+          <SectionHeader kicker={t('crossKicker')} title={t('crossTitle')} sub={isTgs ? t('crossSub') : cc.crossVisitNote} />
           <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{t('byArea')}</div>
           <BarRow items={v.cross_visit_zones.slice(0, 8).map((z) => ({ label: tgsZone(z.zone, locale), value: z.devices }))} highlight={(l) => highlightedZones.includes(l)} color={TEAL_LT} />
           <div className="mt-4 mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{t('byVenueType')}</div>

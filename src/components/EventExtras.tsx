@@ -2,7 +2,7 @@
 // hall-level footprint map, phase chart with holiday+weather bands, the
 // share/placebo/MDE normalization panel, the tourist-vs-domestic split, and the
 // social strip. All inline-SVG, MessyNet tokens, dark-only, GitHub-Pages friendly.
-import type { EventVenue, Hall, DayTag, Normalization, SocialVenue } from '../lib/types'
+import type { EventVenue, Hall, DayTag, Normalization, NaturalExperiment, SocialVenue } from '../lib/types'
 import { TEAL, TEAL_LT, TEAL_PALE, VOLT, MIST, FAINT, WIRE, DEEP, ICE, SES_RAMP } from '../lib/palette'
 import { fmtInt, fmtDateShort } from '../lib/format'
 import { tgsText, type Locale } from '../lib/tgsI18n'
@@ -123,38 +123,87 @@ export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en
   )
 }
 
-// ---- Normalization: verdict + MDE + makuhari-vs-controls share bars ----
-export function NormalizationPanel({ norm }: { norm: Normalization }) {
+// ---- Normalization: verdict + MDE; control-venue bars, or a DAU-share sparkline ----
+function NormBadge({ norm, locale }: { norm: Normalization; locale: Locale }) {
+  const L = (en: string, ja: string) => (locale === 'ja' ? ja : en)
+  return (
+    <div className="flex items-center gap-2">
+      <span className="rounded-[4px] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]"
+        style={{ background: norm.detected ? DEEP : WIRE, color: norm.detected ? VOLT : MIST }}>
+        {norm.detected ? L('Detected', '検出') : L('Within noise floor', 'ノイズ内')}
+      </span>
+      <span className="font-mono text-[12px] text-[var(--mn-ice)]">
+        {norm.relative_pct != null ? `${norm.relative_pct > 0 ? '+' : ''}${norm.relative_pct}% ${L('vs baseline', '対基準')}` : `${norm.effect_pts.toFixed(2)}`}
+      </span>
+      <span className="ml-auto font-mono text-[11px] text-[var(--mn-mist)]">
+        MDE ±{norm.mde_relative_pct != null ? `${norm.mde_relative_pct}%` : `${norm.mde_pts.toFixed(2)}`}
+      </span>
+    </div>
+  )
+}
+
+export function NormalizationPanel({ norm, dayTags, locale = 'en' }:
+  { norm: Normalization; dayTags?: Record<string, DayTag>; locale?: Locale }) {
+  const L = (en: string, ja: string) => (locale === 'ja' ? ja : en)
+  const during = new Set(norm.during_dates)
+  // DAU basis (no control venues): sparkline of DAU share per 100k, during days accented.
+  if (norm.basis === 'dau' || !norm.share_series) {
+    const series = norm.dau_share_per_100k?.series ?? {}
+    const dates = Object.keys(series).sort()
+    const W = 520, H = 120, PAD = { l: 8, r: 8, t: 10, b: 22 }
+    const n = dates.length
+    const max = Math.max(1e-6, ...dates.map((d) => series[d]))
+    const bw = n ? (W - PAD.l - PAD.r) / n : 0
+    return (
+      <div>
+        <NormBadge norm={norm} locale={locale} />
+        <p className="mt-2 text-[11px] leading-relaxed text-[var(--mn-mist)]">{norm.verdict}</p>
+        <div className="mt-3 mb-1 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">
+          {L('Share of national daily-active devices (per 100k)', '全国DAU比（10万人あたり）')}
+        </div>
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="DAU share">
+          {dates.map((d, i) => {
+            const h = (series[d] / max) * (H - PAD.t - PAD.b)
+            const inDuring = during.has(d)
+            const hol = dayTags?.[d]?.holiday
+            return (
+              <g key={d}>
+                <rect x={PAD.l + i * bw + bw * 0.15} y={H - PAD.b - h} width={bw * 0.7} height={h}
+                  fill={inDuring ? VOLT : TEAL} opacity={inDuring ? 0.95 : 0.6} rx={1} />
+                <text x={PAD.l + i * bw + bw / 2} y={H - PAD.b + 11} fontSize={8}
+                  fill={hol ? VOLT : MIST} textAnchor="middle" fontFamily="JetBrains Mono">
+                  {fmtDateShort(d).replace('Sep ', '')}
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+        <div className="mt-1 flex gap-4 text-[9px] uppercase tracking-[0.12em] text-[var(--mn-faint)]">
+          <span><span style={{ background: VOLT }} className="inline-block w-2.5 h-2.5 rounded-[2px] align-middle mr-1" />{L('during window', 'イベント期間')}</span>
+          <span><span style={{ background: TEAL, opacity: 0.6 }} className="inline-block w-2.5 h-2.5 rounded-[2px] align-middle mr-1" />{L('other days', 'その他')}</span>
+        </div>
+      </div>
+    )
+  }
+  // Control-venue basis (warehouse run): bars per panel venue.
   const venues = Object.keys(norm.share_series)
   const treat = venues[0]
-  const during = new Set(norm.during_dates)
-  const meanShare = (v: string) => {
-    const s = norm.share_series[v]; const dd = Object.keys(s).filter((d) => during.has(d))
+  const meanShare = (vk: string) => {
+    const s = norm.share_series![vk]; const dd = Object.keys(s).filter((d) => during.has(d))
     return dd.length ? dd.reduce((a, d) => a + s[d], 0) / dd.length : 0
   }
-  const rows = venues.map((v) => ({ v, share: meanShare(v), treat: v === treat }))
+  const rows = venues.map((vk) => ({ v: vk, share: meanShare(vk), treat: vk === treat }))
   const max = Math.max(1e-6, ...rows.map((r) => r.share))
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <span className="rounded-[4px] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]"
-          style={{ background: norm.detected ? DEEP : WIRE, color: norm.detected ? VOLT : MIST }}>
-          {norm.detected ? 'Detected' : 'Within noise floor'}
-        </span>
-        <span className="font-mono text-[12px] text-[var(--mn-ice)]">
-          {norm.relative_pct != null ? `${norm.relative_pct > 0 ? '+' : ''}${norm.relative_pct}% vs baseline` : `${norm.effect_pts.toFixed(3)} pts`}
-        </span>
-        <span className="ml-auto font-mono text-[11px] text-[var(--mn-mist)]">
-          MDE ±{norm.mde_relative_pct != null ? `${norm.mde_relative_pct}%` : `${norm.mde_pts.toFixed(3)}pts`}
-        </span>
-      </div>
+      <NormBadge norm={norm} locale={locale} />
       <p className="mt-2 text-[11px] leading-relaxed text-[var(--mn-mist)]">{norm.verdict}</p>
-      <div className="mt-3 mb-1 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">During-window share of venue panel</div>
+      <div className="mt-3 mb-1 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('During-window share of venue panel', 'イベント期間の会場パネル内シェア')}</div>
       <div className="flex flex-col gap-1">
         {rows.sort((a, b) => b.share - a.share).map((r) => (
           <div key={r.v} className="flex items-center gap-2 text-[11px]">
             <div className="w-[40%] truncate text-[var(--mn-body)]" style={{ color: r.treat ? VOLT : undefined }} title={r.v}>
-              {r.v}{r.treat ? ' ◂ event' : ''}
+              {r.v}{r.treat ? ' ◂' : ''}
             </div>
             <div className="relative h-[12px] flex-1 rounded-[3px]" style={{ background: WIRE }}>
               <div className="absolute inset-y-0 left-0 rounded-[3px]" style={{ width: `${(r.share / max) * 100}%`, background: r.treat ? VOLT : TEAL }} />
@@ -164,6 +213,122 @@ export function NormalizationPanel({ norm }: { norm: Normalization }) {
         ))}
       </div>
       <p className="mt-2 text-[10px] text-[var(--mn-faint)]">{norm.method}. Placebo n={norm.placebo_n}, SD {norm.placebo_sd_pts} pts.</p>
+    </div>
+  )
+}
+
+// ---- Show-night natural experiment: show vs canceled vs baseline day averages ----
+export function ShowNightChart({ ne, locale = 'en' }: { ne: NaturalExperiment; locale?: Locale }) {
+  const L = (en: string, ja: string) => (locale === 'ja' ? ja : en)
+  const bars = [
+    { label: L('Show days', 'ショー日'), value: ne.avg_devices_show, color: VOLT },
+    { label: L('Canceled', '中止日'), value: ne.avg_devices_canceled, color: TEAL_LT },
+    { label: L('Baseline', '基準日'), value: ne.avg_devices_baseline, color: TEAL },
+  ].filter((b) => b.value != null) as { label: string; value: number; color: string }[]
+  const max = Math.max(1, ...bars.map((b) => b.value))
+  const lift = ne.show_vs_canceled_lift
+  return (
+    <div>
+      <div className="mb-3 font-mono text-[13px] text-[var(--mn-ice)]">
+        {lift != null ? `${lift}×` : '—'}
+        <span className="ml-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('show vs canceled nights', 'ショー対中止')}</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        {bars.map((b) => (
+          <div key={b.label} className="flex items-center gap-2 text-[11px]">
+            <div className="w-[26%] text-[var(--mn-body)]">{b.label}</div>
+            <div className="relative h-[16px] flex-1 rounded-[3px]" style={{ background: WIRE }}>
+              <div className="absolute inset-y-0 left-0 rounded-[3px]" style={{ width: `${(b.value / max) * 100}%`, background: b.color }} />
+            </div>
+            <div className="w-[56px] text-right font-mono text-[var(--mn-ice)]">{fmtInt(Math.round(b.value))}</div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-[10px] leading-relaxed text-[var(--mn-faint)]">
+        {lift != null && lift < 1
+          ? L('Canceled nights drew MORE than show nights — footfall tracks the holiday, not the show.',
+              '中止日の方がショー日より多い——来訪は祝日によるもので、ショーではありません。')
+          : L('Day-total devices (campus box). Evening-hour contrast needs the warehouse.',
+              '日合計端末数（キャンパス範囲）。時間帯別はウェアハウスが必要です。')}
+      </p>
+    </div>
+  )
+}
+
+// ---- Conversation insights: IP topics, language mix, voice mix, concentration ----
+const BAR_COLORS = [VOLT, TEAL, TEAL_LT, TEAL_PALE, DEEP, MIST]
+export function ConversationInsights({ social, locale = 'en' }: { social: SocialVenue; locale?: Locale }) {
+  const L = (en: string, ja: string) => (locale === 'ja' ? ja : en)
+  const es = social.engagement_stats
+  const ip = (social.ip_topics ?? []).slice(0, 6)
+  const ipMax = Math.max(1, ...ip.map((t) => t.posts))
+  const lang = social.language_mix ?? {}
+  const langTotal = Object.values(lang).reduce((a, b) => a + b, 0) || 1
+  const langParts = [
+    { k: 'ja', label: L('Japanese', '日本語'), color: VOLT },
+    { k: 'en', label: L('English', '英語'), color: TEAL_LT },
+    { k: 'other', label: L('Other', 'その他'), color: MIST },
+  ]
+  const voice = social.voice_mix ?? {}
+  const voiceTotal = Object.values(voice).reduce((a, b) => a + b, 0) || 1
+  const voiceLabels: Record<string, string> = {
+    official: L('Official', '公式'), press_creator: L('Press / creator', '報道・クリエイター'),
+    visitor_fan: L('Visitor / fan', '来場者・ファン'),
+  }
+  return (
+    <div className="flex flex-col gap-4">
+      {es?.outlier && (
+        <div className="rounded-[var(--mn-radius)] border-l-2 border-[var(--mn-volt)] bg-[var(--mn-abyss)] px-3 py-2 text-[11px] leading-relaxed text-[var(--mn-mist)]">
+          {L(`One post is ${Math.round(es.top_post_share * 100)}% of all engagement — totals are skewed; median per post is ${es.median}.`,
+             `1投稿が全エンゲージメントの${Math.round(es.top_post_share * 100)}%——合計は偏っています。投稿あたり中央値は${es.median}。`)}
+        </div>
+      )}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('IP / topics (posts)', 'IP・話題（投稿数）')}</div>
+          {ip.length ? ip.map((t) => (
+            <div key={t.topic} className="flex items-center gap-2 text-[11px] mb-1">
+              <div className="w-[42%] truncate text-[var(--mn-body)]" title={t.topic}>{t.topic}</div>
+              <div className="relative h-[12px] flex-1 rounded-[3px]" style={{ background: WIRE }}>
+                <div className="absolute inset-y-0 left-0 rounded-[3px]" style={{ width: `${(t.posts / ipMax) * 100}%`, background: TEAL }} />
+              </div>
+              <div className="w-[36px] text-right font-mono text-[var(--mn-mist)]">{t.posts}</div>
+            </div>
+          )) : <div className="text-[11px] text-[var(--mn-faint)]">—</div>}
+        </div>
+        <div className="flex flex-col gap-4">
+          <div>
+            <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('Language mix', '言語構成')}</div>
+            <div className="flex h-4 w-full overflow-hidden rounded-[3px]">
+              {langParts.map((p) => (lang[p.k] ? <div key={p.k} style={{ width: `${(lang[p.k] / langTotal) * 100}%`, background: p.color }} title={`${p.label}: ${lang[p.k]}`} /> : null))}
+            </div>
+            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[var(--mn-body)]">
+              {langParts.map((p) => (lang[p.k] ? <span key={p.k} className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-[2px]" style={{ background: p.color }} />{p.label} <span className="font-mono text-[var(--mn-mist)]">{Math.round((lang[p.k] / langTotal) * 100)}%</span></span> : null))}
+            </div>
+          </div>
+          <div>
+            <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('Voice mix', '発信者構成')}</div>
+            <div className="flex h-4 w-full overflow-hidden rounded-[3px]">
+              {Object.entries(voice).map(([k, n], i) => <div key={k} style={{ width: `${(n / voiceTotal) * 100}%`, background: BAR_COLORS[i % BAR_COLORS.length] }} title={`${voiceLabels[k] ?? k}: ${n}`} />)}
+            </div>
+            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[var(--mn-body)]">
+              {Object.entries(voice).map(([k, n], i) => <span key={k} className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-[2px]" style={{ background: BAR_COLORS[i % BAR_COLORS.length] }} />{voiceLabels[k] ?? k} <span className="font-mono text-[var(--mn-mist)]">{Math.round((n / voiceTotal) * 100)}%</span></span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">{L('Biggest posts (share of engagement)', '主要投稿（エンゲージメント比）')}</div>
+        {[...(social.feed_posts ?? [])].sort((a, b) => b.engagement - a.engagement).slice(0, 5).map((p) => (
+          <a key={p.post_id} href={p.source_url} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2 text-[11px] hover:text-[var(--mn-heading)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">
+            <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: VOICE_COLOR[p.voice ?? 'unknown'] ?? FAINT }} />
+            <span className="w-[42px] shrink-0 font-mono text-[var(--mn-faint)]">{fmtDateShort(p.date).replace('Sep ', '')}</span>
+            <span className="truncate text-[var(--mn-body)]" title={p.caption}>{p.caption || p.post_id}</span>
+            <span className="ml-auto shrink-0 font-mono text-[var(--mn-mist)]">{es?.total ? `${Math.round((p.engagement / es.total) * 100)}%` : fmtInt(p.engagement)}</span>
+          </a>
+        ))}
+      </div>
     </div>
   )
 }
