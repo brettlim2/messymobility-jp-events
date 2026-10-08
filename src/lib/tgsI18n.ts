@@ -2,7 +2,7 @@ export type Locale = 'en' | 'ja'
 
 export const tgsCopy = {
   en: {
-    language: 'Language', japanMobility: 'Japan Mobility', dataQuality: 'Data quality',
+    language: 'Language', japanMobility: 'Japan Mobility',
     title: 'CAPCOM × Tokyo Game Show', eventLabel: 'Tokyo Game Show 2026 · Makuhari Messe · Sep 17–20 (Sep 21 venue day canceled)',
     framing: 'Explore how CAPCOM coverage, explicit Makuhari mentions, and aggregate movement changed around TGS. Post activity describes publishing, while the mobility panel describes devices in the venue area.',
     jump: 'Explore {count} linked social posts ↓', socialPosts: 'Linked TGS posts', capcomPosts: 'CAPCOM-linked posts', capcomMakuhari: 'CAPCOM + Makuhari mentions',
@@ -55,7 +55,7 @@ export const tgsCopy = {
     odaibaSourceNote: 'JP_Odaiba relevant-media CSV, Sep 14–24 2026. Named event and venue-linked are caption screens. Fuji TV is a separate mention flag, not organizer proof. YouTube publication days have no source timezone.',
   },
   ja: {
-    language: '表示言語', japanMobility: '日本モビリティ', dataQuality: 'データ品質',
+    language: '表示言語', japanMobility: '日本モビリティ',
     title: 'CAPCOM × 東京ゲームショウ', eventLabel: '東京ゲームショウ2026 · 幕張メッセ · 9月17〜20日（21日の現地開催は中止）',
     framing: 'TGS前後のCAPCOM関連投稿、幕張への明示的な言及、会場周辺の集計移動データを比較します。投稿数は発信動向、移動データはエリア内の端末数を表します。',
     jump: '投稿リンク{count}件を見る ↓', socialPosts: 'TGS関連投稿', capcomPosts: 'CAPCOM関連投稿', capcomMakuhari: 'CAPCOM＋幕張の言及',
