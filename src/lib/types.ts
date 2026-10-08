@@ -60,6 +60,7 @@ export interface EventVenue {
   halls?: Hall[]
   day_tags?: Record<string, DayTag>
   holiday_overlap_note?: string
+  holiday_overlap_note_ja?: string
   normalization?: Normalization | null
   natural_experiment?: NaturalExperiment | null
   partial_footfall_day?: string | null

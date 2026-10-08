@@ -68,8 +68,8 @@ export function HallFootprintMap({ halls }: { halls: Hall[] }) {
 }
 
 // ---- Phase chart with event-window shading + holiday + weather bands ----
-export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en' }:
-  { series: Pt[]; during: string[]; dayTags?: Record<string, DayTag>; caption?: string; locale?: Locale }) {
+export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en', postsByDay }:
+  { series: Pt[]; during: string[]; dayTags?: Record<string, DayTag>; caption?: string; locale?: Locale; postsByDay?: Record<string, number> }) {
   const W = 560, H = 190, PAD = { l: 34, r: 12, t: 16, b: 40 }
   const n = series.length
   if (!n) return <div className="text-[12px] text-[var(--mn-faint)]">{tgsText(locale, 'noDailySeries')}</div>
@@ -81,9 +81,12 @@ export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en
   const path = series.map((s, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(s.value).toFixed(1)}`).join(' ')
   const peak = series.reduce((p, s, i) => (s.value > series[p].value ? i : p), 0)
   const stepW = n > 1 ? (W - PAD.l - PAD.r) / (n - 1) : 0
+  const maxPosts = postsByDay ? Math.max(1, ...series.map((s) => postsByDay[s.date] ?? 0)) : 0
+  const postBand = 26 // px of post-volume bars above the baseline
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img"
+        aria-label={`Daily footfall over ${n} days; peak ${fmtDateShort(series[peak].date)} at ${fmtInt(series[peak].value)}.`}>
         {dIdx.length > 0 && (
           <rect x={x(dIdx[0]) - stepW / 2} y={PAD.t} width={x(dIdx[dIdx.length - 1]) - x(dIdx[0]) + stepW}
             height={H - PAD.t - PAD.b} fill={DEEP} opacity={0.35} />
@@ -95,6 +98,14 @@ export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en
           return <line key={`h${i}`} x1={x(i)} y1={PAD.t} x2={x(i)} y2={H - PAD.b} stroke={VOLT} strokeWidth={1} strokeDasharray="2 3" opacity={0.55} />
         })}
         <line x1={PAD.l} y1={H - PAD.b} x2={W - PAD.r} y2={H - PAD.b} stroke={WIRE} strokeWidth={1} />
+        {/* social post-volume overlay (same date axis) */}
+        {postsByDay && series.map((s, i) => {
+          const p = postsByDay[s.date] ?? 0
+          if (!p) return null
+          const h = (p / maxPosts) * postBand
+          return <rect key={`pv${i}`} x={x(i) - Math.max(1.5, stepW * 0.18)} y={H - PAD.b - h}
+            width={Math.max(3, stepW * 0.36)} height={h} fill={FAINT} opacity={0.5} rx={1} />
+        })}
         <path d={path} fill="none" stroke={TEAL} strokeWidth={2} />
         {series.map((s, i) => {
           const t = dayTags?.[s.date]
@@ -118,6 +129,7 @@ export function EventPhaseChart({ series, during, dayTags, caption, locale = 'en
         <span><span style={{ background: DEEP }} className="inline-block w-2.5 h-2.5 rounded-[2px] align-middle mr-1" />{tgsText(locale, 'eventWindow')}</span>
         <span><span style={{ background: VOLT }} className="inline-block w-2.5 h-[2px] align-middle mr-1" />{tgsText(locale, 'publicHoliday')}</span>
         <span>☂ {tgsText(locale, 'rainDay')}</span>
+        {postsByDay && <span><span style={{ background: FAINT }} className="inline-block w-2.5 h-2.5 rounded-[2px] align-middle mr-1" />{locale === 'ja' ? '投稿数' : 'posts'}</span>}
       </div>
     </div>
   )
@@ -350,7 +362,8 @@ export function TouristSplit({ event, tourist, shareDuring }:
         {shareDuring != null ? `${Math.round(shareDuring * 100)}%` : '—'}
         <span className="ml-2 text-[10px] uppercase tracking-[0.14em] text-[var(--mn-faint)]">inbound-tourist share of during visitors</span>
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img"
+        aria-label={`Daily visitors (teal) vs inbound tourists (volt); inbound share of during visitors ${shareDuring != null ? Math.round(shareDuring * 100) + '%' : 'n/a'}.`}>
         <line x1={PAD.l} y1={H - PAD.b} x2={W - PAD.r} y2={H - PAD.b} stroke={WIRE} strokeWidth={1} />
         {event.map((s, i) => {
           const tv = tMap.get(s.date) ?? 0

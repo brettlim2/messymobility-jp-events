@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from './lib/useData'
 import { EventDashboard, type EventConfig } from './components/dashboards/EventDashboard'
-import { tgsText, type Locale } from './lib/tgsI18n'
+import { tgsText, tgsZone, type Locale } from './lib/tgsI18n'
 import type { JpData } from './lib/types'
 
 type Tab = 'fuji' | 'capcom'
@@ -57,7 +57,7 @@ function CrossEventStrip({ data, locale, onPick }: { data: JpData | null; locale
       </div>
       <p className="mt-3 text-[11px] leading-relaxed text-[var(--mn-mist)]">
         {L('Shared pull: ', '共通の回遊先：')}
-        {shared.length ? shared.slice(0, 4).join(', ') : '—'}
+        {shared.length ? shared.slice(0, 4).map((z) => tgsZone(z, locale)).join(locale === 'ja' ? '、' : ', ') : '—'}
         {(akiTgs != null || akiOda != null) && L(
           `  ·  Akihabara share of cross-visits — TGS ${fmtShare(akiTgs)}, Odaiba ${fmtShare(akiOda)}.`,
           `  ·  併訪に占める秋葉原 — TGS ${fmtShare(akiTgs)}、お台場 ${fmtShare(akiOda)}。`)}

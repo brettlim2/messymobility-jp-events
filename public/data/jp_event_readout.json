@@ -507,6 +507,7 @@
       }
     },
     "holiday_overlap_note": "Event window overlaps public holidays: 2026-09-21 (Respect for the Aged Day). Raw counts are confounded by the holiday; the DAU-share normalization controls for panel size.",
+    "holiday_overlap_note_ja": "イベント期間が祝日と重複：2026-09-21（Respect for the Aged Day）。生の数値は祝日の影響を受けます。DAUシェア正規化でパネル規模を補正しています。",
     "natural_experiment": {
       "hours": [
         10,
@@ -1078,6 +1079,7 @@
       }
     },
     "holiday_overlap_note": "Event window overlaps public holidays: 2026-09-21 (Respect for the Aged Day), 2026-09-22 (Citizens' Holiday). Raw counts are confounded by the holiday; the DAU-share normalization controls for panel size.",
+    "holiday_overlap_note_ja": "イベント期間が祝日と重複：2026-09-21（Respect for the Aged Day）、2026-09-22（Citizens' Holiday）。生の数値は祝日の影響を受けます。DAUシェア正規化でパネル規模を補正しています。",
     "natural_experiment": {
       "hours": [
         19,
@@ -1165,14 +1167,12 @@
       ]
     },
     "akihabara_affinity": {
-      "makuhari_messe": {
-        "share": 0.0694,
-        "affinity": null
-      },
-      "odaiba": {
-        "share": 0.0413,
-        "affinity": null
-      }
+      "makuhari_messe": 0.0694,
+      "odaiba": 0.0413
+    },
+    "akihabara_affinity_index": {
+      "makuhari_messe": null,
+      "odaiba": null
     },
     "note": "Device-level overlap requires japan_full.duckdb. Zone co-mention from campus catchments shown instead."
   }

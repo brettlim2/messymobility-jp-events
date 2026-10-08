@@ -52,6 +52,17 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
   const legacyFootprint = !v.footprint || v.footprint.startsWith('legacy')
   const topIp = social?.ip_topics?.[0]?.topic
   const ne = v.natural_experiment ?? null
+  const postsByDay = social?.daily
+    ? Object.fromEntries(Object.entries(social.daily).map(([d, x]) => [d, x.posts]))
+    : undefined
+  const hasProof = !!(v.halls?.length || norm || ne)
+  const navItems = [
+    { id: 'sec-verdict', label: L('Verdict', '結論') },
+    { id: 'sec-footfall', label: L('Footfall', '来訪') },
+    ...(showSocial ? [{ id: socialAnchor, label: L('Conversation', '会話') }] : []),
+    ...(hasProof ? [{ id: 'sec-proof', label: L('Proof', '検証') }] : []),
+    { id: 'sec-audience', label: L('Audience', '来訪者') },
+  ]
 
   return (
     <div className="flex flex-col gap-4">
@@ -79,7 +90,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         </div>
         {v.holiday_overlap_note && (
           <p className="mt-3 text-[11px] leading-relaxed text-[var(--mn-mist)] border-l-2 border-[var(--mn-teal)] pl-2.5">
-            {v.holiday_overlap_note}
+            {locale === 'ja' && v.holiday_overlap_note_ja ? v.holiday_overlap_note_ja : v.holiday_overlap_note}
           </p>
         )}
         {isTgs && !v.window && (
@@ -89,7 +100,17 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         )}
       </GlassPanel>
 
-      <GlassPanel className="p-5">
+      <nav aria-label={L('Sections', 'セクション')}
+        className="sticky top-[58px] z-[5] flex flex-wrap gap-1 rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)]/90 px-2 py-1.5 backdrop-blur-sm">
+        {navItems.map((it) => (
+          <a key={it.id} href={`#${it.id}`}
+            className="rounded px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--mn-mist)] hover:text-[var(--mn-heading)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">
+            {it.label}
+          </a>
+        ))}
+      </nav>
+
+      <GlassPanel id="sec-verdict" className="p-5 scroll-mt-24">
         <SectionHeader kicker={L('Verdict', '結論')} title={L('Did it work, for whom, what next?', '効果は？誰に？次は？')} />
         <div className="grid gap-3 md:grid-cols-3">
           {(() => {
@@ -160,7 +181,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         </div>
       </GlassPanel>}
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div id="sec-footfall" className="grid lg:grid-cols-3 gap-4 scroll-mt-24">
         <GlassPanel className="p-5 lg:col-span-2">
           <div className="flex items-start justify-between gap-3">
             <SectionHeader kicker={t('footfallKicker')} title={isTgs ? t('footfallTitle') : 'Did the activation move offline visitation?'} />
@@ -176,7 +197,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
               </div>
             )}
           </div>
-          <EventPhaseChart series={chartSeries} during={cfg.during} dayTags={v.day_tags} locale={locale}
+          <EventPhaseChart series={chartSeries} during={cfg.during} dayTags={v.day_tags} locale={locale} postsByDay={postsByDay}
             caption={isTgs && !v.window
               ? t('legacyChart')
               : `${t('phaseAverage')} — ${t('before')} ${fmtFloat(v.phase_avg_daily.before)} · ${t('during')} ${fmtFloat(v.phase_avg_daily.during)} · ${t('after')} ${fmtFloat(v.phase_avg_daily.after)}`
@@ -191,7 +212,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
       </div>
 
       {social ? (
-        <GlassPanel className="p-5" id={social.feed_posts ? socialAnchor : undefined}>
+        <GlassPanel className="p-5 scroll-mt-24" id={social.feed_posts ? socialAnchor : undefined}>
           <SectionHeader kicker={t('socialKicker')}
             title={social.feed_posts ? t(isOdaiba ? 'odaibaSocialTitle' : 'socialTitle') : t('socialFallbackTitle')}
             sub={social.feed_posts ? t(isOdaiba ? 'odaibaSocialSub' : 'socialSub') : t('socialFallbackSub')} />
@@ -214,8 +235,8 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         <FutureSlot label={isTgs ? t('missingSocial') : isOdaiba ? t('odaibaMissingSocial') : 'Social buzz for this IP/event overlays on the footfall curve once scraped.'} />
       )}
 
-      {(v.halls?.length || norm || ne) && (
-        <div className="grid lg:grid-cols-2 gap-4">
+      {hasProof && (
+        <div id="sec-proof" className="grid lg:grid-cols-2 gap-4 scroll-mt-24">
           {ne && (ne.avg_devices_show != null || ne.avg_devices_canceled != null) ? (
             <GlassPanel className="p-5">
               <SectionHeader kicker={L('Proof · natural experiment', '検証・自然実験')}
@@ -246,7 +267,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         </GlassPanel>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div id="sec-audience" className="grid lg:grid-cols-2 gap-4 scroll-mt-24">
         <GlassPanel className="p-5">
           <SectionHeader kicker={t('originKicker')} title={t('originTitle')} sub={t('originCoverage', { count: tgsNumber(v.home_origin_coverage, locale) })} />
           {v.home_origin_top_zones.length ? (
