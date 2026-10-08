@@ -21,6 +21,7 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
   { cfg: EventConfig; v: EventVenue | undefined; reference: Reference | null; social?: SocialVenue | null; locale?: Locale }) {
   const [footprint, setFootprint] = useState<'event' | 'campus'>('event')
   const isTgs = cfg.venueKey === 'makuhari_messe'
+  const isOdaiba = cfg.venueKey === 'odaiba'
   const t = (key: keyof typeof tgsCopy.en, values?: Record<string, string | number>) => tgsText(locale, key, values)
   if (!v) return <Empty note={`${isTgs ? t('title') : cfg.title}: ${t('noEvent')}`} />
 
@@ -34,12 +35,16 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
     ? `${norm.relative_pct > 0 ? '+' : ''}${norm.relative_pct}%`
     : fmtLift(v.during_vs_before_lift)
   const headlineSub = norm ? (norm.detected ? t('normalizedDetected') : t('normalizedNoise')) : t('dailyVisitorLift')
-  const showSocial = isTgs && !!social?.feed_posts
+  const showSocial = !!social?.feed_posts && (isTgs || isOdaiba)
   const sep20 = social?.daily?.['2026-09-20']
   const sep19 = social?.daily?.['2026-09-19']
   const sep21 = social?.daily?.['2026-09-21']
+  const sep22 = social?.daily?.['2026-09-22']
+  const sep23 = social?.daily?.['2026-09-23']
+  const cancelWindowPosts = (sep20?.posts ?? 0) + (sep21?.posts ?? 0)
   const highlightedZones = cfg.highlightZones?.map((zone) => tgsZone(zone, locale)) ?? []
   const percent = (part: number, whole: number) => whole ? tgsNumber(Math.round(part / whole * 1000) / 10, locale) : '—'
+  const socialAnchor = isOdaiba ? 'odaiba-social' : 'tgs-social'
 
   return (
     <div className="flex flex-col gap-4">
@@ -47,12 +52,12 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
         <Kicker>{isTgs ? t('eventLabel') : cfg.eventLabel}</Kicker>
         <h2 className="font-display text-[22px] text-[var(--mn-heading)] mt-1">{isTgs ? t('title') : cfg.title}</h2>
         <p className="text-[12px] text-[var(--mn-mist)] mt-1.5 max-w-3xl leading-relaxed">{isTgs ? t('framing') : cfg.framing}</p>
-        {showSocial && <a href="#tgs-social" className="mt-2 inline-block text-[11px] font-semibold text-[var(--mn-teal)] underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">{t('jump', { count: tgsNumber(social.posts, locale) })}</a>}
+        {showSocial && <a href={`#${socialAnchor}`} className="mt-2 inline-block text-[11px] font-semibold text-[var(--mn-teal)] underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mn-volt)]">{t(isOdaiba ? 'odaibaJump' : 'jump', { count: tgsNumber(social.posts, locale) })}</a>}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-4">
           {showSocial ? <>
-            <KpiTile label={t('socialPosts')} value={tgsNumber(social.posts, locale)} />
-            <KpiTile label={t('capcomPosts')} value={tgsNumber(social.capcom_posts ?? 0, locale)} accent />
-            <KpiTile label={t('capcomMakuhari')} value={tgsNumber(social.capcom_venue_mentions ?? 0, locale)} />
+            <KpiTile label={isOdaiba ? t('odaibaSocialPosts') : t('socialPosts')} value={tgsNumber(social.posts, locale)} />
+            <KpiTile label={isOdaiba ? t('odaibaNamedEvent') : t('capcomPosts')} value={tgsNumber(isOdaiba ? (social.named_event_posts ?? 0) : (social.capcom_posts ?? 0), locale)} accent />
+            <KpiTile label={isOdaiba ? t('odaibaFujiMentions') : t('capcomMakuhari')} value={tgsNumber(isOdaiba ? (social.fuji_tv_mentions ?? 0) : (social.capcom_venue_mentions ?? 0), locale)} />
             <KpiTile label={v.footprint ? t('eventHallVisitors') : t('campusDevices')} value={tgsNumber(v.visitors, locale)} />
           </> : <>
             <KpiTile label={isTgs && !v.footprint ? t('campusDevices') : t('eventHallVisitors')} value={fmtInt(v.visitors)}
@@ -82,18 +87,37 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
       {showSocial && <GlassPanel className="p-5">
         <SectionHeader kicker={t('keyFindings')} title={t('keyFindings')} />
         <div className="grid gap-3 md:grid-cols-3">
-          <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
-            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('locationSignal')}</h3>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('locationFinding', { count: tgsNumber(social.capcom_venue_mentions ?? 0, locale), total: tgsNumber(social.capcom_posts ?? 0, locale), share: percent(social.capcom_venue_mentions ?? 0, social.capcom_posts ?? 0) })}</p>
-          </div>
-          {sep20?.footfall != null && sep19?.footfall != null && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
-            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('peakSignal')}</h3>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('peakFinding', { posts: tgsNumber(sep20.posts, locale), current: tgsNumber(sep20.footfall, locale), previous: tgsNumber(sep19.footfall, locale) })}</p>
-          </div>}
-          {sep21 && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
-            <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('cancelSignal')}</h3>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('cancelFinding', { posts: tgsNumber(sep21.posts, locale), share: percent(sep21.posts, social.posts) })}</p>
-          </div>}
+          {isOdaiba ? <>
+            <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('locationSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('odaibaNamedFinding', { count: tgsNumber(social.named_event_posts ?? 0, locale), total: tgsNumber(social.posts, locale), share: percent(social.named_event_posts ?? 0, social.posts) })}</p>
+            </div>
+            {sep23 && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('peakSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('odaibaPeakFinding', { posts: tgsNumber(sep23.posts, locale), footfall: sep22?.footfall == null ? '—' : tgsNumber(sep22.footfall, locale) })}</p>
+            </div>}
+            <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('cancelSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('odaibaCancelFinding', { posts: tgsNumber(cancelWindowPosts, locale), share: percent(cancelWindowPosts, social.posts) })}</p>
+            </div>
+            <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3 md:col-span-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('odaibaFujiMentions')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('odaibaFujiFinding', { count: tgsNumber(social.fuji_tv_mentions ?? 0, locale) })}</p>
+            </div>
+          </> : <>
+            <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('locationSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('locationFinding', { count: tgsNumber(social.capcom_venue_mentions ?? 0, locale), total: tgsNumber(social.capcom_posts ?? 0, locale), share: percent(social.capcom_venue_mentions ?? 0, social.capcom_posts ?? 0) })}</p>
+            </div>
+            {sep20?.footfall != null && sep19?.footfall != null && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('peakSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('peakFinding', { posts: tgsNumber(sep20.posts, locale), current: tgsNumber(sep20.footfall, locale), previous: tgsNumber(sep19.footfall, locale) })}</p>
+            </div>}
+            {sep21 && <div className="rounded-[var(--mn-radius)] border border-[var(--mn-wire)] bg-[var(--mn-abyss)] p-3">
+              <h3 className="font-semibold text-[12px] text-[var(--mn-heading)]">{t('cancelSignal')}</h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--mn-mist)]">{t('cancelFinding', { posts: tgsNumber(sep21.posts, locale), share: percent(sep21.posts, social.posts) })}</p>
+            </div>}
+          </>}
         </div>
       </GlassPanel>}
 
@@ -128,13 +152,14 @@ export function EventDashboard({ cfg, v, reference, social, locale = 'en' }:
       </div>
 
       {social ? (
-        <GlassPanel className="p-5" id={social.feed_posts ? 'tgs-social' : undefined}>
-          <SectionHeader kicker={t('socialKicker')} title={social.feed_posts ? t('socialTitle') : t('socialFallbackTitle')}
-            sub={social.feed_posts ? t('socialSub') : t('socialFallbackSub')} />
+        <GlassPanel className="p-5" id={social.feed_posts ? socialAnchor : undefined}>
+          <SectionHeader kicker={t('socialKicker')}
+            title={social.feed_posts ? t(isOdaiba ? 'odaibaSocialTitle' : 'socialTitle') : t('socialFallbackTitle')}
+            sub={social.feed_posts ? t(isOdaiba ? 'odaibaSocialSub' : 'socialSub') : t('socialFallbackSub')} />
           {social.feed_posts ? <TgsSocialExplorer social={social} locale={locale} /> : <SocialStrip social={social} />}
         </GlassPanel>
       ) : (
-        <FutureSlot label={isTgs ? t('missingSocial') : 'Social buzz for this IP/event overlays on the footfall curve once scraped.'} />
+        <FutureSlot label={isTgs ? t('missingSocial') : isOdaiba ? t('odaibaMissingSocial') : 'Social buzz for this IP/event overlays on the footfall curve once scraped.'} />
       )}
 
       {(v.halls?.length || norm) && (

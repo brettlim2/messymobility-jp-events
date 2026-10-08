@@ -126,6 +126,7 @@ export interface TgsSocialPost {
   relevance: string
   venue_mention: boolean
   hall_mention: string | null
+  fuji_tv_mentioned?: boolean
   engagement: number
   likes: number
   comments: number
@@ -137,7 +138,17 @@ export interface TgsSocialPost {
 export interface SocialVenue {
   posts: number
   engagement: number
-  daily: Record<string, { posts: number; capcom_posts?: number; venue_mentions?: number; capcom_venue_mentions?: number; engagement: number; footfall: number | null }>
+  daily: Record<string, {
+    posts: number
+    capcom_posts?: number
+    venue_mentions?: number
+    capcom_venue_mentions?: number
+    named_event_posts?: number
+    venue_linked_posts?: number
+    fuji_tv_mentions?: number
+    engagement: number
+    footfall: number | null
+  }>
   by_voice?: Record<string, { posts: number; engagement: number }>
   by_post_type?: Record<string, { posts: number; engagement: number }>
   top_posts?: SocialPost[]
@@ -145,13 +156,18 @@ export interface SocialVenue {
   capcom_posts?: number
   venue_mentions?: number
   capcom_venue_mentions?: number
+  named_event_posts?: number
+  venue_linked_posts?: number
+  fuji_tv_mentions?: number
   platforms?: Record<string, number>
   feed_posts?: TgsSocialPost[]
   source_note?: string
   mobility_note?: string
   footfall_label?: string
   cancelled_day?: string
+  cancelled_days?: string[]
   partial_footfall_day?: string | null
+  kind?: 'tgs' | 'odaiba'
 }
 export type Social = Record<string, SocialVenue>
 
